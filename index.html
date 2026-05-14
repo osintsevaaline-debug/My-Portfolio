@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Coder — портфолио</title>
+  <meta name="description" content="Сайты, интерфейсы и digital-проекты: вайб, структура, UX и AI-first подход.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script defer src="target-cursor.js"></script>
+</head>
+<body>
+  <div id="target-cursor" class="target-cursor-wrapper" aria-hidden="true">
+    <div class="target-cursor-dot" id="target-cursor-dot"></div>
+    <div class="target-cursor-corner corner-tl"></div>
+    <div class="target-cursor-corner corner-tr"></div>
+    <div class="target-cursor-corner corner-br"></div>
+    <div class="target-cursor-corner corner-bl"></div>
+  </div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#top">vibe<span>.</span>coder</a>
+      <nav class="nav" aria-label="Навигация">
+        <a href="#projects">Проекты</a>
+        <a href="#reviews">Отзывы</a>
+        <a href="#stack">Стек</a>
+        <a href="#contact" class="nav-cta">Обсудить</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero section">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Vibe Coder / Portfolio / Web &amp; AI Experiences</p>
+          <h1 class="hero-title">
+            <span
+              class="text-type"
+              id="heroTextType"
+              aria-live="polite"
+              aria-label="Я делаю сайты, интерфейсы и digital-проекты, которые выглядят как вайб, а работают как система"
+            >
+              <span class="text-type__content" id="heroTypedContent"></span><span class="text-type__cursor" id="heroTypedCursor" aria-hidden="true">_</span>
+            </span>
+          </h1>
+          <p class="hero-lead">
+            Не просто «что-то сверстать», а собрать ощущение, стиль, логику и подачу так, чтобы проект хотелось открыть, листать и запомнить.
+          </p>
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary">Посмотреть проекты</a>
+            <a href="#contact" class="btn btn-ghost">Обсудить задачу</a>
+          </div>
+        </div>
+        <figure class="hero-photo" aria-label="Портрет">
+          <div class="hero-photo-frame" aria-hidden="true"></div>
+          <img
+            class="hero-photo-img"
+            src="image.jpg"
+            alt="Портрет — vibe coder, digital и веб"
+            width="720"
+            height="900"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          >
+        </figure>
+      </div>
+    </section>
+
+    <section class="section reveal" id="about">
+      <div class="container narrow">
+        <h2 class="section-title">Я не просто пишу код — я собираю впечатление</h2>
+        <div class="prose">
+          <p>
+            Я работаю на стыке кода, визуала, UX и AI-инструментов. Для меня сайт — это не набор блоков. Это ощущение от проекта, ритм, подача, структура и то, как человек чувствует себя внутри интерфейса.
+          </p>
+          <p class="label">Я делаю:</p>
+          <ul class="tag-list">
+            <li>лендинги</li>
+            <li>портфолио</li>
+            <li>промо-страницы</li>
+            <li>интерфейсы</li>
+            <li>спецпроекты</li>
+            <li>digital-концепты</li>
+            <li>AI-first сайты и продукты</li>
+          </ul>
+          <p>
+            Мой подход — сделать быстро, красиво и не бездумно. Чтобы проект не выглядел как очередной шаблон, собранный без вкуса и идеи.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tint reveal" id="skills">
+      <div class="container">
+        <h2 class="section-title">Что я делаю</h2>
+        <div class="cards-grid">
+          <article class="card">
+            <span class="card-num">01</span>
+            <h3>Лендинги</h3>
+            <p>Сайты, которые не просто «есть», а собирают внимание, держат ритм и ведут человека по смыслу.</p>
+          </article>
+          <article class="card">
+            <span class="card-num">02</span>
+            <h3>Портфолио и личные сайты</h3>
+            <p>Страницы, которые показывают не только работы, но и стиль, характер и уровень.</p>
+          </article>
+          <article class="card">
+            <span class="card-num">03</span>
+            <h3>Визуальные концепты</h3>
+            <p>Когда нужен не просто сайт, а ощущение: атмосфера, характер, настроение, подача.</p>
+          </article>
+          <article class="card">
+            <span class="card-num">04</span>
+            <h3>AI + Web</h3>
+            <p>Использую нейросети как инструмент ускорения и усиления идей, а не как замену мышлению.</p>
+          </article>
+          <article class="card">
+            <span class="card-num">05</span>
+            <h3>UX и структура</h3>
+            <p>Продумываю, как человек читает, куда смотрит, где теряется и где принимает решение.</p>
+          </article>
+          <article class="card">
+            <span class="card-num">06</span>
+            <h3>Быстрый запуск</h3>
+            <p>Могу собрать сильную первую версию быстро, без месяцев бесконечных согласований.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="process">
+      <div class="container">
+        <h2 class="section-title">Как я работаю</h2>
+        <ol class="process-list">
+          <li>
+            <span class="process-step">01</span>
+            <div>
+              <h3>Сначала вайб</h3>
+              <p>Я смотрю не только на задачу, но и на ощущение, которое должен передавать проект.</p>
+            </div>
+          </li>
+          <li>
+            <span class="process-step">02</span>
+            <div>
+              <h3>Потом структура</h3>
+              <p>Красивый сайт без логики — это просто красивая обёртка. Поэтому я собираю смысл, сценарий и путь пользователя.</p>
+            </div>
+          </li>
+          <li>
+            <span class="process-step">03</span>
+            <div>
+              <h3>Потом реализация</h3>
+              <p>Когда есть стиль и логика, проект собирается быстрее, точнее и выглядит сильно.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section-tint reveal" id="projects">
+      <div class="container">
+        <h2 class="section-title">Избранные проекты</h2>
+        <p class="section-lead">Несколько направлений — от AI-лендинга до воронки и креативного концепта.</p>
+        <div class="projects-grid">
+          <article class="project-card">
+            <span class="project-tag">Digital</span>
+            <h3>AI Landing Experience</h3>
+            <p>Лендинг для digital-продукта с акцентом на атмосферу, скорость восприятия и современный визуал.</p>
+            <p class="project-meta">Что сделано: структура, тексты, дизайн-концепция, сборка.</p>
+          </article>
+          <article class="project-card">
+            <span class="project-tag">Personal</span>
+            <h3>Portfolio for Creative Expert</h3>
+            <p>Личный сайт-портфолио, который показывает не только кейсы, но и стиль человека.</p>
+            <p class="project-meta">Что сделано: позиционирование, подача, визуальный ритм, упаковка работ.</p>
+          </article>
+          <article class="project-card">
+            <span class="project-tag">Funnel</span>
+            <h3>Bot &amp; Funnel Page</h3>
+            <p>Промо-страница под воронку и digital-продукт с акцентом на конверсию и лёгкость восприятия.</p>
+            <p class="project-meta">Что сделано: логика блоков, тексты, CTA, визуальный каркас.</p>
+          </article>
+          <article class="project-card">
+            <span class="project-tag">Concept</span>
+            <h3>Concept Site for AI Creator</h3>
+            <p>Сайт с упором на трендовую подачу, сильный первый экран и ощущение «это хочется переслать».</p>
+            <p class="project-meta">Что сделано: creative direction, структура, визуальная концепция.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="why">
+      <div class="container narrow">
+        <h2 class="section-title">Почему ко мне идут не просто за кодом</h2>
+        <p class="prose">Потому что я умею видеть проект целиком.</p>
+        <div class="why-grid">
+          <div>
+            <p class="label">Не только:</p>
+            <ul class="plain-list">
+              <li>как это собрать</li>
+            </ul>
+          </div>
+          <div>
+            <p class="label">Но и:</p>
+            <ul class="plain-list">
+              <li>как это подать</li>
+              <li>как это будет восприниматься</li>
+              <li>где человек зацепится взглядом</li>
+              <li>что запомнит</li>
+              <li>почему это будет выглядеть дороже, чем стоит</li>
+            </ul>
+          </div>
+        </div>
+        <p class="highlight-line">Я соединяю: эстетику + структуру + digital-мышление + скорость</p>
+      </div>
+    </section>
+
+    <section class="section reveal" id="stack">
+      <div class="container">
+        <h2 class="section-title">Инструменты</h2>
+        <div class="badges">
+          <span>ChatGPT</span>
+          <span>Cursor</span>
+          <span>HTML / CSS / JS</span>
+          <span>React</span>
+          <span>Tailwind</span>
+          <span>Framer Motion</span>
+          <span>Figma</span>
+          <span>Tilda / Webflow / custom</span>
+          <span>Telegram / Bots / AI tools</span>
+        </div>
+        <p class="stack-note">
+          Но если честно — главный инструмент не стек, а вкус, насмотренность и умение собирать цельное впечатление.
+        </p>
+      </div>
+    </section>
+
+    <section class="section section-tint reveal" id="audience">
+      <div class="container">
+        <h2 class="section-title">Кому подойдёт моя работа</h2>
+        <ul class="audience-list">
+          <li>экспертам</li>
+          <li>креаторам</li>
+          <li>digital-проектам</li>
+          <li>AI-продуктам</li>
+          <li>студиям</li>
+          <li>тем, кому нужен сайт с характером</li>
+          <li>тем, кто не хочет шаблонную безликую страницу</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="manifest section reveal">
+      <div class="container">
+        <blockquote class="manifest-quote">
+          Хороший сайт — это не когда «нормально сверстано». Это когда у проекта появляется энергия, форма и ощущение, что он живой.
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="section section-tint reveal" id="reviews" aria-labelledby="reviews-title">
+      <div class="container">
+        <h2 class="section-title" id="reviews-title">Отзывы</h2>
+        <p class="section-lead">
+          Одна карточка наверху колоды. Потяни влево или нажми «Дальше» — верхняя уходит вниз под стопку, открывается следующий отзыв.
+        </p>
+        <div class="testimonials-layout">
+          <div
+            class="testimonials-viewport testimonials-deck"
+            id="testimonialsViewport"
+            role="region"
+            aria-roledescription="колода карт"
+            aria-label="Отзывы клиентов"
+            tabindex="0"
+          >
+            <article class="testimonial-card cursor-target" data-card="0">
+              <img
+                class="testimonial-card__avatar"
+                src="https://i.pravatar.cc/160?img=33"
+                alt=""
+                width="128"
+                height="128"
+                loading="lazy"
+                decoding="async"
+              >
+              <blockquote class="testimonial-card__quote">
+                «Сайт вышел не шаблонным, а с характером. Структура ясная, тексты не «вода», первый экран сразу цепляет.»
+              </blockquote>
+              <p class="testimonial-card__author">Марина · digital-продукт</p>
+            </article>
+            <article class="testimonial-card cursor-target" data-card="1">
+              <img
+                class="testimonial-card__avatar"
+                src="https://i.pravatar.cc/160?img=47"
+                alt=""
+                width="128"
+                height="128"
+                loading="lazy"
+                decoding="async"
+              >
+              <blockquote class="testimonial-card__quote">
+                «Быстро понял задачу, предложил сильную подачу и довёл до результата без бесконечных итераций.»
+              </blockquote>
+              <p class="testimonial-card__author">Артём · эксперт и спикер</p>
+            </article>
+            <article class="testimonial-card cursor-target" data-card="2">
+              <img
+                class="testimonial-card__avatar"
+                src="https://i.pravatar.cc/160?img=12"
+                alt=""
+                width="128"
+                height="128"
+                loading="lazy"
+                decoding="async"
+              >
+              <blockquote class="testimonial-card__quote">
+                «Важно было ощущение «дорого и современно» — получилось. Коллеги спрашивали, в какой студии делали.»
+              </blockquote>
+              <p class="testimonial-card__author">Ксения · креативное агентство</p>
+            </article>
+          </div>
+          <div class="testimonials-controls">
+            <button type="button" class="btn btn-ghost testimonials-nav" id="testimonialsPrev" aria-label="Предыдущий отзыв">
+              ← Назад
+            </button>
+            <button type="button" class="btn btn-ghost testimonials-nav" id="testimonialsNext" aria-label="Следующий отзыв">
+              Дальше →
+            </button>
+          </div>
+          <p class="testimonials-hint" id="testimonialsHint">Свайп влево по карте — как снимать верхнюю карту с колоды</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta-block reveal" id="cta">
+      <div class="container narrow">
+        <h2 class="section-title">Если тебе нужен сайт, который выглядит сильно и ощущается современно — давай соберём</h2>
+        <p class="section-lead">
+          Могу помочь с концепцией, структурой, упаковкой и реализацией. От первого вайба до готовой страницы.
+        </p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Написать мне</a>
+          <a href="#projects" class="btn btn-ghost">Посмотреть работы</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="contact">
+      <div class="container">
+        <h2 class="section-title">Контакты</h2>
+        <ul class="contacts">
+          <li><strong>Telegram:</strong> <a href="https://t.me/yourname">@yourname</a></li>
+          <li><strong>Email:</strong> <a href="mailto:hello@yourmail.com">hello@yourmail.com</a></li>
+          <li><strong>Ссылки:</strong> Behance / Dribbble / GitHub / Notion / Instagram — <span class="muted">замени на свои</span></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>Vibe Coder · 2026</p>
+      <a href="#top" class="to-top">Наверх</a>
+    </div>
+  </footer>
+
+  <script>
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+  <script>
+    (function () {
+      const viewport = document.getElementById("testimonialsViewport");
+      const btnPrev = document.getElementById("testimonialsPrev");
+      const btnNext = document.getElementById("testimonialsNext");
+      if (!viewport) return;
+
+      const cards = Array.from(viewport.querySelectorAll(".testimonial-card"));
+      if (cards.length < 2) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      /** Индексы карт снизу вверх: [низ, середина, верх] */
+      let deck = [0, 1, 2];
+      let busy = false;
+      let pointerId = null;
+      let dragStartX = 0;
+      let dragging = false;
+
+      function assignLayers() {
+        deck.forEach(function (cardIdx, stackPos) {
+          const el = cards[cardIdx];
+          if (!el) return;
+          const z = 10 + stackPos * 10;
+          el.style.zIndex = String(z);
+          el.style.pointerEvents = stackPos === 2 ? "auto" : "none";
+          el.classList.toggle("testimonial-card--top", stackPos === 2);
+        });
+      }
+
+      function clearTransforms() {
+        cards.forEach(function (el) {
+          el.style.transform = "";
+          el.style.transition = "";
+        });
+      }
+
+      function topCard() {
+        return cards[deck[2]];
+      }
+
+      function goNext() {
+        if (busy) return;
+        const d = deck.slice();
+        const outIdx = d[2];
+        const outEl = cards[outIdx];
+        if (!outEl) return;
+
+        function finish() {
+          deck = [d[2], d[0], d[1]];
+          clearTransforms();
+          assignLayers();
+          busy = false;
+        }
+
+        busy = true;
+        if (reduceMotion.matches) {
+          finish();
+          return;
+        }
+
+        var midIdx = d[1];
+        var midEl = cards[midIdx];
+        if (midEl) {
+          midEl.style.zIndex = "40";
+        }
+        outEl.style.zIndex = "25";
+        outEl.style.transform = "";
+        outEl.style.transition = "transform 0.52s cubic-bezier(0.16, 1, 0.3, 1)";
+        var ended = false;
+        function onEnd(e) {
+          if (e.target !== outEl || e.propertyName !== "transform") return;
+          if (ended) return;
+          ended = true;
+          outEl.removeEventListener("transitionend", onEnd);
+          finish();
+        }
+        outEl.addEventListener("transitionend", onEnd);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            outEl.style.transform = "translateY(calc(100% + 40px)) rotate(-5deg) scale(0.96)";
+          });
+        });
+        window.setTimeout(function () {
+          if (!ended) {
+            ended = true;
+            outEl.removeEventListener("transitionend", onEnd);
+            finish();
+          }
+        }, 700);
+      }
+
+      function goPrev() {
+        if (busy) return;
+        const d = deck.slice();
+        const inIdx = d[0];
+        const inEl = cards[inIdx];
+        if (!inEl) return;
+
+        function finish() {
+          deck = [d[1], d[2], d[0]];
+          clearTransforms();
+          assignLayers();
+          busy = false;
+        }
+
+        busy = true;
+        if (reduceMotion.matches) {
+          finish();
+          return;
+        }
+
+        inEl.style.transition = "none";
+        inEl.style.transform = "translateY(calc(100% + 48px)) rotate(5deg) scale(0.96)";
+        inEl.style.zIndex = "50";
+        var ended = false;
+        function onEnd(e) {
+          if (e.target !== inEl || e.propertyName !== "transform") return;
+          if (ended) return;
+          ended = true;
+          inEl.removeEventListener("transitionend", onEnd);
+          finish();
+        }
+        inEl.addEventListener("transitionend", onEnd);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            inEl.style.transition = "transform 0.52s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1))";
+            inEl.style.transform = "translateY(0) rotate(0deg) scale(1)";
+          });
+        });
+        window.setTimeout(function () {
+          if (!ended) {
+            ended = true;
+            inEl.removeEventListener("transitionend", onEnd);
+            finish();
+          }
+        }, 700);
+      }
+
+      btnNext && btnNext.addEventListener("click", goNext);
+      btnPrev && btnPrev.addEventListener("click", goPrev);
+
+      viewport.addEventListener("keydown", function (e) {
+        if (busy) return;
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          e.preventDefault();
+          goNext();
+        } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          goPrev();
+        }
+      });
+
+      function onPointerDown(e) {
+        if (busy) return;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        pointerId = e.pointerId;
+        dragging = true;
+        dragStartX = e.clientX;
+        try {
+          viewport.setPointerCapture(e.pointerId);
+        } catch (err) {
+          /* ignore */
+        }
+      }
+
+      function onPointerMove(e) {
+        if (!dragging || e.pointerId !== pointerId || busy) return;
+        var dx = e.clientX - dragStartX;
+        var t = topCard();
+        if (!t) return;
+        var pull = Math.max(0, -dx * 0.42);
+        var cap = Math.min(pull, 140);
+        t.style.transition = "none";
+        t.style.transform =
+          "translateY(" + cap + "px) rotate(" + (-cap * 0.03) + "deg) scale(" + (1 - cap * 0.0004) + ")";
+      }
+
+      function onPointerEnd(e) {
+        if (e.pointerId !== pointerId) return;
+        try {
+          viewport.releasePointerCapture(e.pointerId);
+        } catch (err) {
+          /* ignore */
+        }
+        pointerId = null;
+        if (!dragging) return;
+        dragging = false;
+        var endX = typeof e.clientX === "number" ? e.clientX : dragStartX;
+        var dx = endX - dragStartX;
+        var th = 56;
+        var t = topCard();
+        if (t && !busy) {
+          t.style.transition = "";
+          if (dx < -th) {
+            t.style.transform = "";
+            goNext();
+          } else if (dx > th) {
+            t.style.transform = "";
+            goPrev();
+          } else {
+            t.style.transform = "";
+          }
+        }
+      }
+
+      reduceMotion.addEventListener("change", function () {
+        clearTransforms();
+        assignLayers();
+      });
+
+      assignLayers();
+    })();
+  </script>
+  <script>
+    (function () {
+      const contentEl = document.getElementById("heroTypedContent");
+      const cursorEl = document.getElementById("heroTypedCursor");
+      const containerEl = document.getElementById("heroTextType");
+      const heroSection = document.querySelector(".hero");
+      if (!contentEl || !cursorEl || !containerEl || !heroSection) return;
+
+      const texts = [
+        "Я делаю сайты, интерфейсы и digital-проекты, которые выглядят как вайб, а работают как система",
+        "Собираю интерфейсы с ритмом и смыслом — чтобы проект хотелось листать и возвращаться."
+      ];
+      const highlightWord = "вайб";
+      const highlightIndex = 0;
+
+      const typingSpeed = 75;
+      const pauseDuration = 1500;
+      const deletingSpeed = 50;
+      const initialDelay = 400;
+      const loop = true;
+      const showCursor = true;
+      const cursorCharacter = "_";
+      const hideCursorWhileTyping = false;
+
+      let currentTextIndex = 0;
+      let displayedText = "";
+      let isDeleting = false;
+      let started = false;
+      let timeoutId = null;
+
+      function esc(s) {
+        return s
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderHtml(plain, textIdx) {
+        if (textIdx !== highlightIndex) {
+          return esc(plain);
+        }
+        const full = texts[highlightIndex];
+        const start = full.indexOf(highlightWord);
+        if (start === -1) return esc(plain);
+        const L = plain.length;
+        if (L <= start) return esc(plain);
+        const endWord = start + highlightWord.length;
+        if (L < endWord) {
+          return esc(plain.slice(0, start)) + "<em>" + esc(plain.slice(start, L)) + "</em>";
+        }
+        return (
+          esc(plain.slice(0, start)) +
+          "<em>" + esc(highlightWord) + "</em>" +
+          esc(plain.slice(endWord, L))
+        );
+      }
+
+      function syncCursor() {
+        cursorEl.textContent = cursorCharacter;
+        const full = texts[currentTextIndex];
+        const hide =
+          !showCursor ||
+          (hideCursorWhileTyping && full && displayedText.length < full.length && !isDeleting);
+        cursorEl.classList.toggle("text-type__cursor--hidden", hide);
+      }
+
+      function tick() {
+        const currentFull = texts[currentTextIndex];
+        if (!currentFull) return;
+
+        if (isDeleting) {
+          if (displayedText === "") {
+            isDeleting = false;
+            const last = currentTextIndex === texts.length - 1;
+            if (last && !loop) return;
+            currentTextIndex = (currentTextIndex + 1) % texts.length;
+            timeoutId = setTimeout(tick, pauseDuration);
+            return;
+          }
+          displayedText = displayedText.slice(0, -1);
+          contentEl.innerHTML = renderHtml(displayedText, currentTextIndex);
+          syncCursor();
+          timeoutId = setTimeout(tick, deletingSpeed);
+          return;
+        }
+
+        if (displayedText.length < currentFull.length) {
+          displayedText = currentFull.slice(0, displayedText.length + 1);
+          contentEl.innerHTML = renderHtml(displayedText, currentTextIndex);
+          syncCursor();
+          timeoutId = setTimeout(tick, typingSpeed);
+          return;
+        }
+
+        const last = currentTextIndex === texts.length - 1;
+        if (!loop && last) return;
+        timeoutId = setTimeout(function () {
+          isDeleting = true;
+          tick();
+        }, pauseDuration);
+      }
+
+      function startTyping() {
+        if (started) return;
+        started = true;
+        displayedText = "";
+        isDeleting = false;
+        currentTextIndex = 0;
+        contentEl.innerHTML = "";
+        syncCursor();
+        timeoutId = setTimeout(tick, initialDelay);
+      }
+
+      const heroIo = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              startTyping();
+              heroIo.disconnect();
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+      heroIo.observe(heroSection);
+
+      window.addEventListener(
+        "beforeunload",
+        function () {
+          if (timeoutId) clearTimeout(timeoutId);
+        },
+        { once: true }
+      );
+    })();
+  </script>
+</body>
+</html>
