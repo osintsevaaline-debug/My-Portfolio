@@ -13,6 +13,7 @@
   <script defer src="target-cursor.js"></script>
 </head>
 <body>
+  <div id="galaxy-bg" class="galaxy-bg" aria-hidden="true"></div>
   <div id="target-cursor" class="target-cursor-wrapper" aria-hidden="true">
     <div class="target-cursor-dot" id="target-cursor-dot"></div>
     <div class="target-cursor-corner corner-tl"></div>
@@ -29,7 +30,7 @@
         <a href="#projects">Проекты</a>
         <a href="#reviews">Отзывы</a>
         <a href="#stack">Стек</a>
-        <a href="#contact" class="nav-cta">Обсудить</a>
+        <button type="button" class="nav-cta" data-open-contact>Написать мне</button>
       </nav>
     </div>
   </header>
@@ -54,7 +55,7 @@
           </p>
           <div class="hero-actions">
             <a href="#projects" class="btn btn-primary">Посмотреть проекты</a>
-            <a href="#contact" class="btn btn-ghost">Обсудить задачу</a>
+            <button type="button" class="btn btn-ghost" data-open-contact>Написать мне</button>
           </div>
         </div>
         <figure class="hero-photo" aria-label="Портрет">
@@ -347,7 +348,7 @@
           Могу помочь с концепцией, структурой, упаковкой и реализацией. От первого вайба до готовой страницы.
         </p>
         <div class="hero-actions">
-          <a href="#contact" class="btn btn-primary">Написать мне</a>
+          <button type="button" class="btn btn-primary" data-open-contact>Написать мне</button>
           <a href="#projects" class="btn btn-ghost">Посмотреть работы</a>
         </div>
       </div>
@@ -364,6 +365,69 @@
       </div>
     </section>
   </main>
+
+  <div
+    class="contact-modal"
+    id="contactModal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="contactModalTitle"
+    aria-hidden="true"
+    hidden
+  >
+    <div class="contact-modal__backdrop" data-close-contact tabindex="-1"></div>
+    <div class="contact-modal__panel" role="document">
+      <button type="button" class="contact-modal__close" data-close-contact aria-label="Закрыть окно">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h2 class="contact-modal__title" id="contactModalTitle">Написать мне</h2>
+      <p class="contact-modal__lead">Оставьте контакты — свяжусь с вами и обсудим задачу.</p>
+      <form class="contact-form" id="contactForm" novalidate>
+        <div class="contact-form__field">
+          <label for="contactName">Имя</label>
+          <input
+            type="text"
+            id="contactName"
+            name="name"
+            autocomplete="name"
+            placeholder="Как к вам обращаться"
+            required
+          >
+        </div>
+        <div class="contact-form__field">
+          <label for="contactEmail">Почта</label>
+          <input
+            type="email"
+            id="contactEmail"
+            name="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            required
+          >
+        </div>
+        <div class="contact-form__field">
+          <label for="contactPhone">Номер телефона</label>
+          <input
+            type="tel"
+            id="contactPhone"
+            name="phone"
+            autocomplete="tel"
+            placeholder="+7 (999) 000-00-00"
+            required
+          >
+        </div>
+        <label class="contact-form__consent">
+          <input type="checkbox" id="contactConsent" name="consent" required>
+          <span>Даю согласие на обработку моих персональных данных</span>
+        </label>
+        <p class="contact-form__error" id="contactFormError" role="alert" hidden></p>
+        <button type="submit" class="btn btn-primary contact-form__submit">Отправить</button>
+      </form>
+      <p class="contact-modal__success" id="contactFormSuccess" hidden>
+        Спасибо! Заявка отправлена — скоро свяжусь с вами.
+      </p>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="container footer-inner">
@@ -735,5 +799,130 @@
       );
     })();
   </script>
+  <script>
+    (function () {
+      const modal = document.getElementById("contactModal");
+      const form = document.getElementById("contactForm");
+      const errorEl = document.getElementById("contactFormError");
+      const successEl = document.getElementById("contactFormSuccess");
+      if (!modal || !form) return;
+
+      const openTriggers = document.querySelectorAll("[data-open-contact]");
+      const closeTriggers = modal.querySelectorAll("[data-close-contact]");
+      let lastFocus = null;
+
+      function showError(msg) {
+        if (!errorEl) return;
+        errorEl.textContent = msg;
+        errorEl.hidden = !msg;
+      }
+
+      function openModal() {
+        lastFocus = document.activeElement;
+        modal.hidden = false;
+        modal.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(function () {
+          modal.classList.add("is-open");
+        });
+        document.body.classList.add("contact-modal-open");
+        const first = form.querySelector("input:not([type='checkbox'])");
+        window.setTimeout(function () {
+          first && first.focus();
+        }, 80);
+      }
+
+      function closeModal() {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("contact-modal-open");
+        showError("");
+        window.setTimeout(function () {
+          if (!modal.classList.contains("is-open")) {
+            modal.hidden = true;
+          }
+        }, 360);
+        if (lastFocus && typeof lastFocus.focus === "function") {
+          lastFocus.focus();
+        }
+      }
+
+      function resetFormState() {
+        form.reset();
+        modal.classList.remove("contact-modal--success");
+        form.hidden = false;
+        if (successEl) successEl.hidden = true;
+        form.querySelectorAll(".is-invalid").forEach(function (el) {
+          el.classList.remove("is-invalid");
+        });
+        showError("");
+      }
+
+      openTriggers.forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          resetFormState();
+          openModal();
+        });
+      });
+
+      closeTriggers.forEach(function (el) {
+        el.addEventListener("click", closeModal);
+      });
+
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal.querySelector(".contact-modal__backdrop")) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("is-open")) {
+          closeModal();
+        }
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        showError("");
+        form.querySelectorAll(".is-invalid").forEach(function (el) {
+          el.classList.remove("is-invalid");
+        });
+
+        const name = form.querySelector("#contactName");
+        const email = form.querySelector("#contactEmail");
+        const phone = form.querySelector("#contactPhone");
+        const consent = form.querySelector("#contactConsent");
+
+        if (!name.value.trim()) {
+          name.classList.add("is-invalid");
+          showError("Укажите имя.");
+          name.focus();
+          return;
+        }
+        if (!email.value.trim() || !email.checkValidity()) {
+          email.classList.add("is-invalid");
+          showError("Укажите корректный email.");
+          email.focus();
+          return;
+        }
+        if (!phone.value.trim()) {
+          phone.classList.add("is-invalid");
+          showError("Укажите номер телефона.");
+          phone.focus();
+          return;
+        }
+        if (!consent.checked) {
+          showError("Нужно дать согласие на обработку персональных данных.");
+          consent.focus();
+          return;
+        }
+
+        modal.classList.add("contact-modal--success");
+        form.hidden = true;
+        if (successEl) successEl.hidden = false;
+      });
+    })();
+  </script>
+  <script type="module" src="galaxy-bg.js"></script>
 </body>
 </html>
