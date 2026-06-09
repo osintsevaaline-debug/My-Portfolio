@@ -692,6 +692,154 @@ body > * {
   font-size: 0.98rem;
 }
 
+/* --- ChromaGrid (React Bits port) --- */
+.chroma-grid.projects-chroma {
+  position: relative;
+  --x: 50%;
+  --y: 50%;
+  --r: 300px;
+  border-radius: calc(var(--radius) + 4px);
+}
+
+.chroma-grid .projects-showcase {
+  position: relative;
+  z-index: 1;
+}
+
+.chroma-overlay,
+.chroma-fade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  backdrop-filter: grayscale(0.85) brightness(0.82) saturate(0.75);
+  -webkit-backdrop-filter: grayscale(0.85) brightness(0.82) saturate(0.75);
+  background: rgba(0, 0, 0, 0.001);
+}
+
+.chroma-overlay {
+  z-index: 2;
+  mask-image: radial-gradient(
+    circle var(--r) at var(--x) var(--y),
+    transparent 0%,
+    transparent 15%,
+    rgba(0, 0, 0, 0.1) 30%,
+    rgba(0, 0, 0, 0.22) 45%,
+    rgba(0, 0, 0, 0.35) 60%,
+    rgba(0, 0, 0, 0.5) 75%,
+    rgba(0, 0, 0, 0.68) 88%,
+    white 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle var(--r) at var(--x) var(--y),
+    transparent 0%,
+    transparent 15%,
+    rgba(0, 0, 0, 0.1) 30%,
+    rgba(0, 0, 0, 0.22) 45%,
+    rgba(0, 0, 0, 0.35) 60%,
+    rgba(0, 0, 0, 0.5) 75%,
+    rgba(0, 0, 0, 0.68) 88%,
+    white 100%
+  );
+}
+
+.chroma-fade {
+  z-index: 3;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+  mask-image: radial-gradient(
+    circle var(--r) at var(--x) var(--y),
+    white 0%,
+    white 15%,
+    rgba(255, 255, 255, 0.9) 30%,
+    rgba(255, 255, 255, 0.78) 45%,
+    rgba(255, 255, 255, 0.65) 60%,
+    rgba(255, 255, 255, 0.5) 75%,
+    rgba(255, 255, 255, 0.32) 88%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle var(--r) at var(--x) var(--y),
+    white 0%,
+    white 15%,
+    rgba(255, 255, 255, 0.9) 30%,
+    rgba(255, 255, 255, 0.78) 45%,
+    rgba(255, 255, 255, 0.65) 60%,
+    rgba(255, 255, 255, 0.5) 75%,
+    rgba(255, 255, 255, 0.32) 88%,
+    transparent 100%
+  );
+}
+
+.chroma-grid--static .chroma-overlay,
+.chroma-grid--static .chroma-fade {
+  display: none;
+}
+
+.project-showcase-card.chroma-card {
+  position: relative;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --spotlight-color: rgba(196, 255, 77, 0.16);
+  background: var(--card-gradient, linear-gradient(155deg, rgba(124, 92, 255, 0.09), var(--bg-elevated)));
+}
+
+.project-showcase-card.chroma-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at var(--mouse-x) var(--mouse-y),
+    var(--spotlight-color),
+    transparent 72%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-out-expo);
+  z-index: 4;
+}
+
+.project-showcase-card.chroma-card:hover::before {
+  opacity: 1;
+}
+
+.project-showcase-card.chroma-card:hover {
+  border-color: var(--card-border, rgba(196, 255, 77, 0.22));
+}
+
+.chroma-grid:not(.chroma-grid--static) .project-showcase-card.chroma-card:hover .project-showcase-card__frame img {
+  filter: saturate(1) brightness(1) contrast(1.04);
+}
+
+.chroma-grid:not(.chroma-grid--static) .project-showcase-card--warm.chroma-card:hover .project-showcase-card__frame img {
+  filter: saturate(0.96) brightness(0.98) contrast(1.05) sepia(0.04);
+}
+
+.chroma-grid:not(.chroma-grid--static) .project-showcase-card--app.chroma-card:hover .project-showcase-card__frame img {
+  filter: saturate(0.92) brightness(0.94) contrast(1.08) hue-rotate(-4deg);
+}
+
+@media (max-width: 960px) {
+  .chroma-grid.projects-chroma {
+    --r: 220px;
+  }
+}
+
+@media (pointer: coarse) {
+  .chroma-overlay,
+  .chroma-fade {
+    opacity: 0.35;
+  }
+
+  .chroma-fade {
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
+
+/* --- / ChromaGrid --- */
+
 .projects-showcase {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -726,8 +874,69 @@ body > * {
   align-items: stretch;
 }
 
+.project-showcase-card--lead-reverse {
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+}
+
+.project-showcase-card--lead-reverse .project-showcase-card__frame {
+  order: 2;
+  border-right: none;
+  border-left: 1px solid var(--line);
+}
+
+.project-showcase-card--lead-reverse .project-showcase-card__body {
+  order: 1;
+}
+
+.project-showcase-card--warm {
+  background: linear-gradient(155deg, rgba(212, 175, 95, 0.08), var(--bg-elevated));
+}
+
+.project-showcase-card--warm:hover {
+  border-color: rgba(212, 175, 95, 0.28);
+  box-shadow:
+    0 28px 56px rgba(0, 0, 0, 0.42),
+    0 0 40px rgba(212, 175, 95, 0.1);
+}
+
+.project-showcase-card--warm .project-showcase-card__frame {
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 0%, rgba(212, 175, 95, 0.12), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.12));
+}
+
+.project-showcase-card--warm .project-tag {
+  color: #d4af5f;
+}
+
+.project-showcase-card--warm.chroma-card {
+  --spotlight-color: rgba(212, 175, 95, 0.2);
+  background: var(--card-gradient);
+}
+
+.project-showcase-card--app {
+  background: linear-gradient(155deg, rgba(124, 92, 255, 0.07), rgba(155, 184, 74, 0.05), var(--bg-elevated));
+}
+
+.project-showcase-card--app:hover {
+  border-color: rgba(155, 184, 74, 0.28);
+  box-shadow:
+    0 28px 56px rgba(0, 0, 0, 0.42),
+    0 0 40px rgba(124, 92, 255, 0.12);
+}
+
+.project-showcase-card--app .project-tag {
+  color: #9ed4a0;
+}
+
+.project-showcase-card--app.chroma-card {
+  --spotlight-color: rgba(158, 212, 160, 0.18);
+  background: var(--card-gradient);
+}
+
 .project-showcase-card__frame {
   margin: 0;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -737,6 +946,59 @@ body > * {
     radial-gradient(ellipse 90% 80% at 50% 0%, rgba(124, 92, 255, 0.14), transparent 70%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.12));
   border-bottom: 1px solid var(--line);
+  isolation: isolate;
+}
+
+.project-showcase-card__frame::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(
+      155deg,
+      rgba(124, 92, 255, 0.1) 0%,
+      rgba(10, 10, 12, 0.02) 42%,
+      rgba(10, 10, 12, 0.16) 100%
+    );
+  mix-blend-mode: soft-light;
+  opacity: 0.85;
+  transition: opacity 0.35s var(--ease-out-expo);
+}
+
+.project-showcase-card--warm .project-showcase-card__frame::after {
+  background:
+    linear-gradient(
+      155deg,
+      rgba(212, 175, 95, 0.14) 0%,
+      rgba(10, 10, 12, 0.04) 45%,
+      rgba(10, 10, 12, 0.14) 100%
+    );
+}
+
+.project-showcase-card--app .project-showcase-card__frame {
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 0%, rgba(124, 92, 255, 0.12), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(155, 184, 74, 0.08), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.14));
+}
+
+.project-showcase-card--app .project-showcase-card__frame::after {
+  background:
+    linear-gradient(
+      155deg,
+      rgba(124, 92, 255, 0.12) 0%,
+      rgba(10, 10, 12, 0.06) 50%,
+      rgba(10, 10, 12, 0.18) 100%
+    );
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+.project-showcase-card__frame--portrait {
+  min-height: 240px;
 }
 
 .project-showcase-card--lead .project-showcase-card__frame {
@@ -746,7 +1008,13 @@ body > * {
   border-right: 1px solid var(--line);
 }
 
+.project-showcase-card--lead .project-showcase-card__frame::after {
+  inset: 18px;
+}
+
 .project-showcase-card__frame img {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: auto;
@@ -757,15 +1025,52 @@ body > * {
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.35),
     0 0 0 1px rgba(255, 255, 255, 0.06);
-  transition: transform 0.5s var(--ease-out-expo);
+  filter: saturate(0.9) brightness(0.94) contrast(1.05);
+  transition:
+    transform 0.5s var(--ease-out-expo),
+    filter 0.35s var(--ease-out-expo);
+}
+
+.project-showcase-card--warm .project-showcase-card__frame img {
+  filter: saturate(0.86) brightness(0.93) contrast(1.06) sepia(0.08);
+}
+
+.project-showcase-card--app .project-showcase-card__frame img {
+  max-height: 260px;
+  filter: saturate(0.8) brightness(0.88) contrast(1.1) hue-rotate(-6deg);
+}
+
+.project-showcase-card:hover .project-showcase-card__frame::after {
+  opacity: 0.65;
 }
 
 .project-showcase-card--lead .project-showcase-card__frame img {
   max-height: 300px;
 }
 
+.project-showcase-card--warm.project-showcase-card--lead .project-showcase-card__frame img {
+  max-height: 340px;
+}
+
 .project-showcase-card:hover .project-showcase-card__frame img {
   transform: scale(1.02);
+  filter: saturate(0.94) brightness(0.96) contrast(1.05);
+}
+
+.project-showcase-card--warm:hover .project-showcase-card__frame img {
+  filter: saturate(0.9) brightness(0.95) contrast(1.06) sepia(0.06);
+}
+
+.project-showcase-card--app:hover .project-showcase-card__frame img {
+  filter: saturate(0.86) brightness(0.9) contrast(1.1) hue-rotate(-6deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-showcase-card__frame img,
+  .project-showcase-card:hover .project-showcase-card__frame img {
+    transition: none;
+    transform: none;
+  }
 }
 
 .project-showcase-card__body {
@@ -809,9 +1114,23 @@ body > * {
   padding-top: 14px;
 }
 
+@media (min-width: 961px) {
+  .projects-showcase > .project-showcase-card:nth-child(6):last-child {
+    grid-column: 1 / -1;
+    max-width: calc(66.666% - 9px);
+    justify-self: center;
+  }
+}
+
 @media (max-width: 960px) {
   .projects-showcase {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .projects-showcase > .project-showcase-card:nth-child(6):last-child {
+    grid-column: auto;
+    max-width: none;
+    justify-self: stretch;
   }
 
   .project-showcase-card--lead {
@@ -821,6 +1140,16 @@ body > * {
   .project-showcase-card--lead .project-showcase-card__frame {
     border-right: none;
     border-bottom: 1px solid var(--line);
+  }
+
+  .project-showcase-card--lead-reverse .project-showcase-card__frame {
+    order: 0;
+    border-left: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .project-showcase-card--lead-reverse .project-showcase-card__body {
+    order: 0;
   }
 }
 

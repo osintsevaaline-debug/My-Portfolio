@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="target-cursor.js"></script>
+  <script defer src="chroma-grid.js"></script>
 </head>
 <body>
   <div id="galaxy-bg" class="galaxy-bg" aria-hidden="true"></div>
@@ -168,9 +169,19 @@
     <section class="section section-tint reveal" id="projects">
       <div class="container">
         <h2 class="section-title">Избранные проекты</h2>
-        <p class="section-lead">Реальные кейсы — от промо-лендинга до квиза и визуального концепта. Скриншоты целиком, без жёсткой обрезки.</p>
+        <p class="section-lead">Реальные кейсы — от мобильных приложений и beauty-лендингов до квиза и визуального концепта. Скриншоты целиком, без жёсткой обрезки.</p>
+        <div
+          class="chroma-grid projects-chroma"
+          data-radius="300"
+          data-damping="0.45"
+          data-fade-out="0.6"
+          data-ease="power3.out"
+        >
         <div class="projects-showcase">
-          <article class="project-showcase-card project-showcase-card--lead cursor-target">
+          <article
+            class="project-showcase-card project-showcase-card--lead chroma-card cursor-target"
+            style="--card-border: #c4ff4d; --card-gradient: linear-gradient(145deg, rgba(124, 92, 255, 0.28), var(--bg-elevated));"
+          >
             <figure class="project-showcase-card__frame">
               <img
                 src="./images/projects/ai-landing.png"
@@ -189,7 +200,32 @@
             </div>
           </article>
 
-          <article class="project-showcase-card cursor-target">
+          <article
+            class="project-showcase-card project-showcase-card--lead project-showcase-card--lead-reverse project-showcase-card--warm chroma-card cursor-target"
+            style="--card-border: #d4af5f; --card-gradient: linear-gradient(155deg, rgba(212, 175, 95, 0.26), var(--bg-elevated));"
+          >
+            <figure class="project-showcase-card__frame">
+              <img
+                src="./images/projects/permanent-makeup.png"
+                alt="Лендинг мастера перманентного макияжа — премиальная подача услуги"
+                width="1024"
+                height="880"
+                loading="lazy"
+                decoding="async"
+              >
+            </figure>
+            <div class="project-showcase-card__body">
+              <span class="project-tag">Beauty</span>
+              <h3>Перманентный макияж</h3>
+              <p>Премиальный лендинг мастера: золотая эстетика, эмоциональный первый экран и блок болей, который ведёт к записи.</p>
+              <p class="project-meta">Структура, тексты, визуальная концепция, сборка.</p>
+            </div>
+          </article>
+
+          <article
+            class="project-showcase-card chroma-card cursor-target"
+            style="--card-border: #9bb84a; --card-gradient: linear-gradient(165deg, rgba(155, 184, 74, 0.22), var(--bg-elevated));"
+          >
             <figure class="project-showcase-card__frame">
               <img
                 src="./images/projects/portfolio.png"
@@ -208,7 +244,10 @@
             </div>
           </article>
 
-          <article class="project-showcase-card cursor-target">
+          <article
+            class="project-showcase-card chroma-card cursor-target"
+            style="--card-border: #7c5cff; --card-gradient: linear-gradient(195deg, rgba(124, 92, 255, 0.26), var(--bg-elevated));"
+          >
             <figure class="project-showcase-card__frame">
               <img
                 src="./images/projects/funnel.png"
@@ -227,7 +266,10 @@
             </div>
           </article>
 
-          <article class="project-showcase-card cursor-target">
+          <article
+            class="project-showcase-card chroma-card cursor-target"
+            style="--card-border: #e8a0bf; --card-gradient: linear-gradient(210deg, rgba(232, 160, 191, 0.22), var(--bg-elevated));"
+          >
             <figure class="project-showcase-card__frame">
               <img
                 src="./images/projects/concept.png"
@@ -245,6 +287,31 @@
               <p class="project-meta">Creative direction, структура, визуальная концепция.</p>
             </div>
           </article>
+
+          <article
+            class="project-showcase-card project-showcase-card--app chroma-card cursor-target"
+            style="--card-border: #9ed4a0; --card-gradient: linear-gradient(225deg, rgba(155, 184, 74, 0.24), var(--bg-elevated));"
+          >
+            <figure class="project-showcase-card__frame project-showcase-card__frame--portrait">
+              <img
+                src="./images/projects/family-budget.png"
+                alt="Мобильное приложение «Семейный бюджет» — главный экран"
+                width="350"
+                height="745"
+                loading="lazy"
+                decoding="async"
+              >
+            </figure>
+            <div class="project-showcase-card__body">
+              <span class="project-tag">Mobile App</span>
+              <h3>Семейный бюджет</h3>
+              <p>Финансовое приложение для семьи: баланс, копилки, операции и понятная навигация в спокойной UI-системе.</p>
+              <p class="project-meta">UX, интерфейс, логика экранов, сборка.</p>
+            </div>
+          </article>
+        </div>
+        <div class="chroma-overlay" aria-hidden="true"></div>
+        <div class="chroma-fade" aria-hidden="true"></div>
         </div>
       </div>
     </section>
