@@ -49,6 +49,22 @@ body::before {
     linear-gradient(180deg, var(--bg-deep) 0%, var(--bg) 38%, var(--bg) 100%);
 }
 
+body > .galaxy-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: screen;
+}
+
+body > .galaxy-bg canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  vertical-align: top;
+}
+
 body > * {
   position: relative;
   z-index: 1;
@@ -676,33 +692,92 @@ body > * {
   font-size: 0.98rem;
 }
 
-.projects-grid {
+.projects-showcase {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
 }
 
-.project-card {
-  padding: 26px;
+.project-showcase-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   border-radius: var(--radius);
   border: 1px solid var(--line);
-  border-left: 3px solid;
-  border-left-color: rgba(124, 92, 255, 0.55);
-  background: linear-gradient(145deg, rgba(124, 92, 255, 0.1), var(--bg-elevated));
+  background: linear-gradient(155deg, rgba(124, 92, 255, 0.09), var(--bg-elevated));
   transition:
     border-color 0.35s var(--ease-out-expo),
-    border-left-color 0.35s var(--ease-out-expo),
     transform 0.35s var(--ease-out-expo),
     box-shadow 0.35s var(--ease-out-expo);
 }
 
-.project-card:hover {
+.project-showcase-card:hover {
   border-color: rgba(196, 255, 77, 0.22);
-  border-left-color: var(--accent);
-  transform: translateY(-3px) rotate(-0.25deg);
+  transform: translateY(-4px);
   box-shadow:
-    0 24px 48px rgba(0, 0, 0, 0.4),
-    0 0 36px rgba(124, 92, 255, 0.15);
+    0 28px 56px rgba(0, 0, 0, 0.42),
+    0 0 40px rgba(124, 92, 255, 0.14);
+}
+
+.project-showcase-card--lead {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  align-items: stretch;
+}
+
+.project-showcase-card__frame {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 14px;
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 0%, rgba(124, 92, 255, 0.14), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.12));
+  border-bottom: 1px solid var(--line);
+}
+
+.project-showcase-card--lead .project-showcase-card__frame {
+  min-height: 260px;
+  padding: 18px;
+  border-bottom: none;
+  border-right: 1px solid var(--line);
+}
+
+.project-showcase-card__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 12px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition: transform 0.5s var(--ease-out-expo);
+}
+
+.project-showcase-card--lead .project-showcase-card__frame img {
+  max-height: 300px;
+}
+
+.project-showcase-card:hover .project-showcase-card__frame img {
+  transform: scale(1.02);
+}
+
+.project-showcase-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 22px 24px 26px;
+}
+
+.project-showcase-card--lead .project-showcase-card__body {
+  justify-content: center;
+  padding: 28px 32px;
 }
 
 .project-tag {
@@ -713,25 +788,46 @@ body > * {
   color: var(--accent);
 }
 
-.project-card h3 {
+.project-showcase-card h3 {
   font-family: var(--font-display);
   margin: 12px 0 10px;
   font-size: 1.2rem;
 }
 
-.project-card > p:first-of-type {
+.project-showcase-card__body > p:first-of-type {
   margin: 0 0 14px;
   color: var(--muted);
   font-size: 0.95rem;
 }
 
 .project-meta {
-  margin: 0;
+  margin: auto 0 0;
   font-size: 0.85rem;
   color: var(--muted);
   opacity: 0.9;
   border-top: 1px solid var(--line);
   padding-top: 14px;
+}
+
+@media (max-width: 960px) {
+  .projects-showcase {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .project-showcase-card--lead {
+    grid-template-columns: 1fr;
+  }
+
+  .project-showcase-card--lead .project-showcase-card__frame {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 640px) {
+  .projects-showcase {
+    grid-template-columns: 1fr;
+  }
 }
 
 .why-grid {
@@ -1081,7 +1177,7 @@ body > * {
 }
 
 .reveal .cards-grid > .card,
-.reveal .projects-grid > .project-card,
+.reveal .projects-showcase > .project-showcase-card,
 .reveal .process-list > li,
 .reveal .badges > span,
 .reveal .audience-list > li,
@@ -1104,7 +1200,7 @@ body > * {
 }
 
 .reveal.is-visible .cards-grid > .card,
-.reveal.is-visible .projects-grid > .project-card,
+.reveal.is-visible .projects-showcase > .project-showcase-card,
 .reveal.is-visible .process-list > li,
 .reveal.is-visible .badges > span,
 .reveal.is-visible .audience-list > li,
@@ -1128,7 +1224,7 @@ body > * {
 }
 
 .reveal.is-visible .cards-grid > .card:nth-child(1),
-.reveal.is-visible .projects-grid > .project-card:nth-child(1),
+.reveal.is-visible .projects-showcase > .project-showcase-card:nth-child(1),
 .reveal.is-visible .process-list > li:nth-child(1),
 .reveal.is-visible .badges > span:nth-child(1),
 .reveal.is-visible .audience-list > li:nth-child(1),
@@ -1138,7 +1234,7 @@ body > * {
 }
 
 .reveal.is-visible .cards-grid > .card:nth-child(2),
-.reveal.is-visible .projects-grid > .project-card:nth-child(2),
+.reveal.is-visible .projects-showcase > .project-showcase-card:nth-child(2),
 .reveal.is-visible .process-list > li:nth-child(2),
 .reveal.is-visible .badges > span:nth-child(2),
 .reveal.is-visible .audience-list > li:nth-child(2),
@@ -1148,7 +1244,7 @@ body > * {
 }
 
 .reveal.is-visible .cards-grid > .card:nth-child(3),
-.reveal.is-visible .projects-grid > .project-card:nth-child(3),
+.reveal.is-visible .projects-showcase > .project-showcase-card:nth-child(3),
 .reveal.is-visible .process-list > li:nth-child(3),
 .reveal.is-visible .badges > span:nth-child(3),
 .reveal.is-visible .audience-list > li:nth-child(3),
@@ -1157,7 +1253,7 @@ body > * {
 }
 
 .reveal.is-visible .cards-grid > .card:nth-child(4),
-.reveal.is-visible .projects-grid > .project-card:nth-child(4),
+.reveal.is-visible .projects-showcase > .project-showcase-card:nth-child(4),
 .reveal.is-visible .process-list > li:nth-child(4),
 .reveal.is-visible .badges > span:nth-child(4),
 .reveal.is-visible .audience-list > li:nth-child(4),
@@ -1166,7 +1262,7 @@ body > * {
 }
 
 .reveal.is-visible .cards-grid > .card:nth-child(5),
-.reveal.is-visible .projects-grid > .project-card:nth-child(5),
+.reveal.is-visible .projects-showcase > .project-showcase-card:nth-child(5),
 .reveal.is-visible .process-list > li:nth-child(5),
 .reveal.is-visible .badges > span:nth-child(5),
 .reveal.is-visible .audience-list > li:nth-child(5),
@@ -1175,7 +1271,7 @@ body > * {
 }
 
 .reveal.is-visible .cards-grid > .card:nth-child(6),
-.reveal.is-visible .projects-grid > .project-card:nth-child(6),
+.reveal.is-visible .projects-showcase > .project-showcase-card:nth-child(6),
 .reveal.is-visible .process-list > li:nth-child(6),
 .reveal.is-visible .badges > span:nth-child(6),
 .reveal.is-visible .audience-list > li:nth-child(6),
@@ -1246,7 +1342,7 @@ body > * {
   }
 
   .card:hover,
-  .project-card:hover,
+  .project-showcase-card:hover,
   .tag-list li:hover,
   .badges span:hover {
     transform: none;
@@ -1260,7 +1356,7 @@ body > * {
   .reveal .section-title,
   .reveal .section-lead,
   .reveal .cards-grid > .card,
-  .reveal .projects-grid > .project-card,
+  .reveal .projects-showcase > .project-showcase-card,
   .reveal .process-list > li,
   .reveal .badges > span,
   .reveal .audience-list > li,
