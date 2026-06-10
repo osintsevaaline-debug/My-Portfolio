@@ -16,7 +16,7 @@
   }
 
   function isAuthed() {
-    return sessionStorage.getItem(window.ADMIN_CONFIG.sessionKey) === "1";
+    return !!(window.ADMIN_CONFIG && sessionStorage.getItem(window.ADMIN_CONFIG.sessionKey) === "1");
   }
 
   function showApp() {
@@ -30,28 +30,67 @@
     $("#adminShell").hidden = true;
   }
 
-  function bindLogin() {
+  function showLoginError(msg) {
+    var el = $("#loginError");
+    if (el) {
+      el.textContent = msg;
+      el.hidden = !msg;
+    }
+    if (msg) toast(msg);
+  }
+
+  function tryLogin() {
     if (!window.ADMIN_CONFIG || !window.ADMIN_CONFIG.password) {
-      toast("Не загружен config.js — обновите страницу");
+      showLoginError("Не загружен config.js. Обновите страницу: Ctrl+Shift+R");
       return;
     }
 
-    $("#loginForm").addEventListener("submit", function (e) {
+    var pass = ($("#loginPassword").value || "").trim();
+    if (!pass) {
+      showLoginError("Введите пароль");
+      return;
+    }
+
+    if (pass === window.ADMIN_CONFIG.password) {
+      showLoginError("");
+      sessionStorage.setItem(window.ADMIN_CONFIG.sessionKey, "1");
+      showApp();
+      return;
+    }
+
+    showLoginError("Неверный пароль");
+    $("#loginPassword").value = "";
+    $("#loginPassword").focus();
+  }
+
+  function bindLogin() {
+    var form = $("#loginForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
-      var pass = ($("#loginPassword").value || "").trim();
-      if (pass === window.ADMIN_CONFIG.password) {
-        sessionStorage.setItem(window.ADMIN_CONFIG.sessionKey, "1");
-        showApp();
-      } else {
-        toast("Неверный пароль");
-        $("#loginPassword").value = "";
-        $("#loginPassword").focus();
-      }
+      tryLogin();
     });
-    $("#logoutBtn").addEventListener("click", function () {
-      sessionStorage.removeItem(window.ADMIN_CONFIG.sessionKey);
-      showLogin();
-    });
+
+    var submitBtn = $("#loginSubmitBtn");
+    if (submitBtn) {
+      submitBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        tryLogin();
+      });
+    }
+
+    var logout = $("#logoutBtn");
+    if (logout) {
+      logout.addEventListener("click", function () {
+        sessionStorage.removeItem(window.ADMIN_CONFIG.sessionKey);
+        showLogin();
+      });
+    }
+
+    if (!window.ADMIN_CONFIG || !window.ADMIN_CONFIG.password) {
+      showLoginError("Не загружен config.js. Обновите страницу: Ctrl+Shift+R");
+    }
   }
 
   function field(label, id, value, type) {
@@ -379,50 +418,62 @@
   }
 
   function bindActions() {
-    $("#saveDraftBtn").addEventListener("click", function () {
-      var data = collectFromForm();
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-      toast("Черновик сохранён — откройте сайт с ?draft=1");
-    });
+    var saveDraftBtn = $("#saveDraftBtn");
+    if (saveDraftBtn) {
+      saveDraftBtn.addEventListener("click", function () {
+        var data = collectFromForm();
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+        toast("Черновик сохранён — откройте сайт с ?draft=1");
+      });
+    }
 
-    $("#exportBtn").addEventListener("click", function () {
-      var data = collectFromForm();
-      var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "content.json";
-      a.click();
-      URL.revokeObjectURL(a.href);
-      toast("Файл content.json скачан");
-    });
+    var exportBtn = $("#exportBtn");
+    if (exportBtn) {
+      exportBtn.addEventListener("click", function () {
+        var data = collectFromForm();
+        var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "content.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        toast("Файл content.json скачан");
+      });
+    }
 
-    $("#importInput").addEventListener("change", function (e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function () {
-        try {
-          renderAll(JSON.parse(reader.result));
-          toast("JSON импортирован");
-        } catch (err) {
-          toast("Ошибка чтения JSON");
-        }
-      };
-      reader.readAsText(file);
-      e.target.value = "";
-    });
+    var importInput = $("#importInput");
+    if (importInput) {
+      importInput.addEventListener("change", function (e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            renderAll(JSON.parse(reader.result));
+            toast("JSON импортирован");
+          } catch (err) {
+            toast("Ошибка чтения JSON");
+          }
+        };
+        reader.readAsText(file);
+        e.target.value = "";
+      });
+    }
 
-    $("#publishHintBtn").addEventListener("click", function () {
-      var data = collectFromForm();
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-      var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "content.json";
-      a.click();
-      URL.revokeObjectURL(a.href);
-      toast("Скачайте content.json и замените data/content.json в репозитории");
-    });
+    var publishHintBtn = $("#publishHintBtn");
+    if (publishHintBtn) {
+      publishHintBtn.addEventListener("click", function () {
+        var data = collectFromForm();
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+        var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "content.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        toast("Скачайте content.json и замените data/content.json в репозитории");
+      });
+    }
   }
 
   function loadAndRender() {
@@ -432,10 +483,28 @@
       .catch(function () { toast("Не удалось загрузить content.json"); });
   }
 
-  bindLogin();
-  bindNav();
-  bindActions();
+  function boot() {
+    try {
+      bindLogin();
+      bindNav();
+      bindActions();
+      if (isAuthed() && window.ADMIN_CONFIG && window.ADMIN_CONFIG.password) {
+        showApp();
+      } else {
+        if (window.ADMIN_CONFIG && window.ADMIN_CONFIG.sessionKey) {
+          sessionStorage.removeItem(window.ADMIN_CONFIG.sessionKey);
+        }
+        showLogin();
+      }
+    } catch (err) {
+      console.error(err);
+      showLoginError("Ошибка админки. Обновите страницу или откройте консоль (F12).");
+    }
+  }
 
-  if (isAuthed()) showApp();
-  else showLogin();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
 })();
