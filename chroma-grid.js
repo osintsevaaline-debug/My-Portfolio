@@ -97,9 +97,15 @@
     document.querySelectorAll(".chroma-grid").forEach(initChromaGrid);
   }
 
+  window.reinitChromaGrid = boot;
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
   } else {
     boot();
   }
+
+  document.addEventListener("portfolio:content-ready", function () {
+    window.setTimeout(boot, 50);
+  });
 })();

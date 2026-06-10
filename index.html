@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script defer src="js/content-loader.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script defer src="target-cursor.js"></script>
   <script defer src="chroma-grid.js"></script>
@@ -592,12 +593,23 @@
       const btnNext = document.getElementById("testimonialsNext");
       if (!viewport) return;
 
-      const cards = Array.from(viewport.querySelectorAll(".testimonial-card"));
+      let cards = Array.from(viewport.querySelectorAll(".testimonial-card"));
       if (cards.length < 2) return;
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
       /** Индексы карт снизу вверх: [низ, середина, верх] */
-      let deck = [0, 1, 2];
+      let deck = cards.map(function (_, i) { return i; });
+
+      function refreshCards() {
+        cards = Array.from(viewport.querySelectorAll(".testimonial-card"));
+        if (cards.length < 2) return;
+        deck = cards.map(function (_, i) { return i; });
+        busy = false;
+        clearTransforms();
+        assignLayers();
+      }
+
+      document.addEventListener("testimonials:updated", refreshCards);
       let busy = false;
       let pointerId = null;
       let dragStartX = 0;
@@ -806,12 +818,21 @@
       const heroSection = document.querySelector(".hero");
       if (!contentEl || !cursorEl || !containerEl || !heroSection) return;
 
-      const texts = [
+      let texts = [
         "Я делаю сайты, интерфейсы и digital-проекты, которые выглядят как вайб, а работают как система",
         "Собираю интерфейсы с ритмом и смыслом — чтобы проект хотелось листать и возвращаться."
       ];
-      const highlightWord = "вайб";
+      let highlightWord = "вайб";
       const highlightIndex = 0;
+
+      document.addEventListener("portfolio:content-ready", function (e) {
+        if (e.detail && e.detail.hero) {
+          if (e.detail.hero.typewriter && e.detail.hero.typewriter.length) {
+            texts = e.detail.hero.typewriter;
+          }
+          if (e.detail.hero.highlightWord) highlightWord = e.detail.hero.highlightWord;
+        }
+      });
 
       const typingSpeed = 75;
       const pauseDuration = 1500;

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Админка — Vibe Coder Portfolio</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="admin-login" id="adminLogin">
+    <form class="admin-login__card" id="loginForm">
+      <h1>Админка портфолио</h1>
+      <p>Вход для редактирования контента сайта</p>
+      <div class="admin-field">
+        <label for="loginPassword">Пароль</label>
+        <input type="password" id="loginPassword" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px">Войти</button>
+      <p class="admin-hint" style="margin-top:16px;margin-bottom:0">Пароль по умолчанию: <code>vibe2026</code> — смените в <code>admin/config.js</code></p>
+    </form>
+  </div>
+
+  <div class="admin-shell" id="adminShell" hidden>
+    <aside class="admin-sidebar">
+      <h1>vibe.admin</h1>
+      <p class="sub">Редактор контента</p>
+      <nav class="admin-nav" aria-label="Разделы">
+        <button type="button" data-panel="meta" class="is-active">SEO</button>
+        <button type="button" data-panel="hero">Hero</button>
+        <button type="button" data-panel="about">Обо мне</button>
+        <button type="button" data-panel="skills">Навыки</button>
+        <button type="button" data-panel="process">Процесс</button>
+        <button type="button" data-panel="projects">Проекты</button>
+        <button type="button" data-panel="why">Почему я</button>
+        <button type="button" data-panel="stack">Стек</button>
+        <button type="button" data-panel="audience">Аудитория</button>
+        <button type="button" data-panel="manifest">Манифест</button>
+        <button type="button" data-panel="reviews">Отзывы</button>
+        <button type="button" data-panel="cta">CTA</button>
+        <button type="button" data-panel="contacts">Контакты</button>
+        <button type="button" data-panel="privacy">152-ФЗ</button>
+        <button type="button" data-panel="footer">Футер</button>
+      </nav>
+      <div class="admin-sidebar__actions">
+        <button type="button" class="btn btn-primary btn-sm" id="saveDraftBtn">Сохранить черновик</button>
+        <a href="../index.html?draft=1" class="btn btn-sm" target="_blank" rel="noopener">Превью сайта</a>
+        <button type="button" class="btn btn-sm" id="exportBtn">Скачать JSON</button>
+        <label class="btn btn-sm" style="cursor:pointer">
+          Импорт JSON
+          <input type="file" id="importInput" accept="application/json,.json" hidden>
+        </label>
+        <button type="button" class="btn btn-sm" id="publishHintBtn">Опубликовать</button>
+        <button type="button" class="btn btn-sm btn-danger" id="logoutBtn">Выйти</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <h2 id="panelTitle">SEO</h2>
+        <a href="../index.html" class="btn btn-sm" target="_blank" rel="noopener">Открыть сайт</a>
+      </header>
+
+      <section class="admin-panel is-active" id="panel-meta"></section>
+      <section class="admin-panel" id="panel-hero"></section>
+      <section class="admin-panel" id="panel-about"></section>
+      <section class="admin-panel" id="panel-skills"></section>
+      <section class="admin-panel" id="panel-process"></section>
+      <section class="admin-panel" id="panel-projects"></section>
+      <section class="admin-panel" id="panel-why"></section>
+      <section class="admin-panel" id="panel-stack"></section>
+      <section class="admin-panel" id="panel-audience"></section>
+      <section class="admin-panel" id="panel-manifest"></section>
+      <section class="admin-panel" id="panel-reviews"></section>
+      <section class="admin-panel" id="panel-cta"></section>
+      <section class="admin-panel" id="panel-contacts"></section>
+      <section class="admin-panel" id="panel-privacy"></section>
+      <section class="admin-panel" id="panel-footer"></section>
+
+      <div class="admin-hint">
+        <strong>Как опубликовать изменения на сайте:</strong><br>
+        1. Отредактируйте разделы и нажмите «Сохранить черновик» — проверьте через «Превью сайта».<br>
+        2. Нажмите «Опубликовать» или «Скачать JSON» — замените файл <code>data/content.json</code> в репозитории.<br>
+        3. Закоммитьте и запушьте на GitHub — сайт обновится автоматически.
+      </div>
+    </main>
+  </div>
+
+  <div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
+
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
