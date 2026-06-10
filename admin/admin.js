@@ -1,7 +1,10 @@
 (function () {
   const DRAFT_KEY = "portfolio-content-draft";
   const CONTENT_URL = "../data/content.json";
+  const CONTACT_CONFIG_URL = "../data/contact-config.json";
+  const LOCAL_SUBMISSIONS_KEY = "portfolio-submissions";
   let content = null;
+  let contactConfig = null;
   let memoryAuth = false;
 
   const $ = function (sel, root) { return (root || document).querySelector(sel); };
@@ -412,6 +415,8 @@
       '<div class="admin-grid-2">' + field("Email label", "f-email-label", data.contacts.email.label) + field("Email URL", "f-email-url", data.contacts.email.url) + "</div>" +
       '<div class="admin-grid-2">' + field("Заявка label", "f-app-label", data.contacts.application.label) + field("Заявка URL", "f-app-url", data.contacts.application.url) + "</div>";
 
+    renderSubmissionsPanel();
+
     $("#panel-privacy").innerHTML =
       field("Заголовок", "f-privacy-title", data.privacy.title) +
       listField("Абзацы (каждый с новой строки, для длинных — один абзац = одна строка)", "f-privacy-text", data.privacy.paragraphs);
@@ -455,6 +460,202 @@
     });
   }
 
+  function getLocalSubmissions() {
+    try {
+      return JSON.parse(localStorage.getItem(LOCAL_SUBMISSIONS_KEY) || "[]");
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function formatSubmissionDate(value) {
+    if (!value) return "—";
+    var d = new Date(value);
+    if (isNaN(d.getTime())) return String(value);
+    return d.toLocaleString("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function collectContactConfigFromForm() {
+    var web3 = $("#f-web3forms-key");
+    var api = $("#f-submissions-api");
+    var email = $("#f-notify-email");
+    return {
+      web3formsAccessKey: web3 ? web3.value.trim() : "",
+      submissionsApiUrl: api ? api.value.trim() : "",
+      notifyEmail: email ? email.value.trim() : "",
+      telegramHint: (contactConfig && contactConfig.telegramHint) || "@Alina_Osintseva"
+    };
+  }
+
+  function renderSubmissionsTable(rows, sourceLabel) {
+    if (!rows.length) {
+      return '<p class="admin-submissions-empty">Пока нет заявок' + (sourceLabel ? " (" + sourceLabel + ")" : "") + ".</p>";
+    }
+    return (
+      '<div class="admin-table-wrap">' +
+      '<table class="admin-table">' +
+      "<thead><tr><th>Дата</th><th>Имя</th><th>Email</th><th>Телефон</th></tr></thead>" +
+      "<tbody>" +
+      rows.map(function (row) {
+        return (
+          "<tr>" +
+          "<td>" + escapeHtml(formatSubmissionDate(row.createdAt)) + "</td>" +
+          "<td>" + escapeHtml(row.name) + "</td>" +
+          "<td><a href=\"mailto:" + escapeHtml(row.email) + "\">" + escapeHtml(row.email) + "</a></td>" +
+          "<td>" + escapeHtml(row.phone) + "</td>" +
+          "</tr>"
+        );
+      }).join("") +
+      "</tbody></table></div>"
+    );
+  }
+
+  function loadRemoteSubmissions(apiUrl) {
+    if (!apiUrl) return Promise.resolve([]);
+    return fetch(apiUrl + (apiUrl.indexOf("?") >= 0 ? "&" : "?") + "v=" + Date.now())
+      .then(function (res) {
+        if (!res.ok) throw new Error("fetch_failed");
+        return res.json();
+      })
+      .then(function (data) {
+        return (data && data.submissions) || [];
+      })
+      .catch(function () {
+        return null;
+      });
+  }
+
+  function refreshSubmissionsList() {
+    var listEl = $("#submissionsList");
+    var statusEl = $("#submissionsStatus");
+    if (!listEl) return;
+
+    var cfg = collectContactConfigFromForm();
+    if (statusEl) {
+      statusEl.textContent = "Загрузка…";
+      statusEl.classList.remove("is-error");
+    }
+
+    loadRemoteSubmissions(cfg.submissionsApiUrl).then(function (remote) {
+      var local = getLocalSubmissions();
+      var html = "";
+
+      if (remote === null && cfg.submissionsApiUrl) {
+        html += '<p class="admin-submissions-empty is-error">Не удалось загрузить заявки из Google Таблицы. Проверьте URL и доступ Web App.</p>';
+      } else if (remote && remote.length) {
+        html += '<h3 class="admin-subsection-title">Из Google Таблицы</h3>' + renderSubmissionsTable(remote, "таблица");
+      } else if (cfg.submissionsApiUrl) {
+        html += '<h3 class="admin-subsection-title">Из Google Таблицы</h3>' + renderSubmissionsTable([], "таблица");
+      }
+
+      if (local.length) {
+        html += '<h3 class="admin-subsection-title">Локально в этом браузере</h3>' +
+          '<p class="admin-submissions-note">Сюда попадают тестовые заявки, если ключи ещё не настроены, или копии после успешной отправки.</p>' +
+          renderSubmissionsTable(local, "браузер");
+      }
+
+      if (!html) {
+        if (!cfg.web3formsAccessKey && !cfg.submissionsApiUrl) {
+          html =
+            '<p class="admin-submissions-empty">Заявки никуда не уходят, пока не настроите отправку ниже. ' +
+            "После настройки они будут приходить на почту и/или отображаться здесь.</p>";
+        } else if (cfg.web3formsAccessKey && !cfg.submissionsApiUrl) {
+          html =
+            '<p class="admin-submissions-empty">Заявки уходят на почту <strong>' + escapeHtml(cfg.notifyEmail || "из Web3Forms") + "</strong>. " +
+            'Чтобы видеть их в админке, подключите Google Таблицу (инструкция ниже).</p>';
+        } else {
+          html = renderSubmissionsTable([], "");
+        }
+      }
+
+      listEl.innerHTML = html;
+      if (statusEl) {
+        statusEl.textContent = remote && remote.length
+          ? "Обновлено: " + remote.length + " заявок"
+          : "Обновлено";
+      }
+    });
+  }
+
+  function renderSubmissionsPanel() {
+    var panel = $("#panel-submissions");
+    if (!panel) return;
+
+    var cfg = contactConfig || {
+      web3formsAccessKey: "",
+      submissionsApiUrl: "",
+      notifyEmail: "Osintseva.aline@gmail.com",
+      telegramHint: "@Alina_Osintseva"
+    };
+
+    panel.innerHTML =
+      '<div class="admin-hint admin-submissions-hint">' +
+      "<p><strong>Где смотреть заявки из формы «Написать мне»:</strong></p>" +
+      "<ol>" +
+      "<li><strong>Почта</strong> — зарегистрируйтесь на <a href=\"https://web3forms.com\" target=\"_blank\" rel=\"noopener\">web3forms.com</a>, получите Access Key и укажите его ниже. Письма придут на email из Web3Forms.</li>" +
+      "<li><strong>Эта вкладка</strong> — создайте Google Таблицу, вставьте код из <code>admin/google-apps-script-contact.js</code>, разверните Web App и вставьте URL ниже.</li>" +
+      "<li>После изменений скачайте <code>contact-config.json</code> и замените файл <code>data/contact-config.json</code> в репозитории.</li>" +
+      "</ol></div>" +
+      field("Web3Forms Access Key", "f-web3forms-key", cfg.web3formsAccessKey, "password") +
+      field("URL Google Apps Script (submissionsApiUrl)", "f-submissions-api", cfg.submissionsApiUrl) +
+      field("Email для уведомлений (справочно)", "f-notify-email", cfg.notifyEmail) +
+      '<div class="admin-submissions-actions">' +
+      '<button type="button" class="btn" id="refreshSubmissionsBtn">Обновить список</button>' +
+      '<button type="button" class="btn btn-sm" id="exportContactConfigBtn">Скачать contact-config.json</button>' +
+      "</div>" +
+      '<p class="admin-submissions-status" id="submissionsStatus"></p>' +
+      '<div id="submissionsList"></div>';
+
+    var refreshBtn = $("#refreshSubmissionsBtn");
+    if (refreshBtn) refreshBtn.onclick = refreshSubmissionsList;
+
+    var exportBtn = $("#exportContactConfigBtn");
+    if (exportBtn) {
+      exportBtn.onclick = function () {
+        var data = collectContactConfigFromForm();
+        var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "contact-config.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        toast("Файл contact-config.json скачан");
+      };
+    }
+
+    refreshSubmissionsList();
+  }
+
+  function loadContactConfig() {
+    return fetch(CONTACT_CONFIG_URL + "?v=" + Date.now())
+      .then(function (r) {
+        if (!r.ok) throw new Error("config");
+        return r.json();
+      })
+      .then(function (data) {
+        contactConfig = data || {};
+        return contactConfig;
+      })
+      .catch(function () {
+        contactConfig = contactConfig || {};
+        return contactConfig;
+      });
+  }
+
   function bindNav() {
     $$(".admin-nav button[data-panel]").forEach(function (btn) {
       btn.addEventListener("click", function () {
@@ -464,6 +665,9 @@
         var panel = document.getElementById("panel-" + btn.dataset.panel);
         if (panel) panel.classList.add("is-active");
         $("#panelTitle").textContent = btn.textContent;
+        if (btn.dataset.panel === "submissions") {
+          refreshSubmissionsList();
+        }
       });
     });
   }
@@ -528,10 +732,13 @@
   }
 
   function loadAndRender() {
-    fetch(CONTENT_URL + "?v=" + Date.now())
-      .then(function (r) { return r.json(); })
-      .then(renderAll)
-      .catch(function () { toast("Не удалось загрузить content.json"); });
+    loadContactConfig().then(function () {
+      return fetch(CONTENT_URL + "?v=" + Date.now())
+        .then(function (r) { return r.json(); })
+        .then(renderAll);
+    }).catch(function () {
+      toast("Не удалось загрузить content.json");
+    });
   }
 
   function boot() {
