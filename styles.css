@@ -1781,3 +1781,226 @@ body > * {
   border-right: none;
   border-top: none;
 }
+
+/* Модальное окно «Написать мне» */
+.contact-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.35s var(--ease-out-expo),
+    visibility 0.35s;
+}
+
+.contact-modal.is-open {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+}
+
+.contact-modal[hidden] {
+  display: none;
+}
+
+.contact-modal.is-open[hidden] {
+  display: flex;
+}
+
+.contact-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 6, 8, 0.78);
+  backdrop-filter: blur(8px);
+}
+
+.contact-modal__panel {
+  position: relative;
+  width: min(480px, 100%);
+  max-height: min(92vh, 640px);
+  overflow-y: auto;
+  padding: clamp(24px, 5vw, 32px);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(
+    165deg,
+    rgba(18, 18, 26, 0.98) 0%,
+    rgba(10, 10, 12, 0.98) 100%
+  );
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(124, 92, 255, 0.12) inset;
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.4s var(--ease-out-expo);
+}
+
+.contact-modal.is-open .contact-modal__panel {
+  transform: translateY(0) scale(1);
+}
+
+.contact-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.contact-modal__close:hover {
+  border-color: rgba(124, 92, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.contact-modal__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 36px 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.contact-modal__title::before {
+  display: none;
+}
+
+.contact-modal__lead {
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  width: 100%;
+}
+
+.contact-form__field {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.contact-form__field label {
+  display: block;
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.contact-form__field input {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.contact-form__field input::placeholder {
+  color: rgba(155, 150, 176, 0.65);
+}
+
+.contact-form__field input:hover {
+  border-color: rgba(124, 92, 255, 0.25);
+}
+
+.contact-form__field input:focus {
+  outline: none;
+  border-color: rgba(124, 92, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.15);
+}
+
+.contact-form__field input.is-invalid {
+  border-color: rgba(255, 100, 100, 0.55);
+}
+
+.contact-form__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.contact-form__consent input {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--accent-2);
+  cursor: pointer;
+}
+
+.contact-form__consent:has(input:focus-visible) {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.contact-form__error {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #ff8a8a;
+}
+
+.contact-form__submit {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 4px;
+}
+
+.contact-modal__success {
+  margin: 0;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(196, 255, 77, 0.1);
+  border: 1px solid rgba(196, 255, 77, 0.25);
+  color: var(--text);
+  font-weight: 500;
+}
+
+.contact-modal--success .contact-form {
+  display: none;
+}
+
+.contact-modal--success .contact-modal__lead {
+  display: none;
+}
+
+body.contact-modal-open {
+  overflow: hidden;
+}
