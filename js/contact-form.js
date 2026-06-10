@@ -64,14 +64,18 @@
     if (!config.submissionsApiUrl) {
       return Promise.reject(new Error("no_sheet"));
     }
+    var body = new URLSearchParams();
+    body.append("name", payload.name);
+    body.append("email", payload.email);
+    body.append("phone", payload.phone);
+    body.append("source", payload.source || "portfolio-contact-form");
+
     return fetch(config.submissionsApiUrl, {
       method: "POST",
-      mode: "cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    }).then(function (res) {
-      if (!res.ok) throw new Error("sheet_failed");
-      return res.json().catch(function () { return { ok: true }; });
+      mode: "no-cors",
+      body: body
+    }).then(function () {
+      return { success: true };
     });
   }
 

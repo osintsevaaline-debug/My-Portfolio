@@ -551,17 +551,40 @@
 
   function loadRemoteSubmissions(apiUrl) {
     if (!apiUrl) return Promise.resolve([]);
-    return fetch(apiUrl + (apiUrl.indexOf("?") >= 0 ? "&" : "?") + "v=" + Date.now())
-      .then(function (res) {
-        if (!res.ok) throw new Error("fetch_failed");
-        return res.json();
-      })
-      .then(function (data) {
-        return (data && data.submissions) || [];
-      })
-      .catch(function () {
-        return null;
-      });
+
+    return new Promise(function (resolve) {
+      var cbName = "portfolioSubmissions_" + Date.now();
+      var script = document.createElement("script");
+      var finished = false;
+
+      function cleanup() {
+        if (finished) return;
+        finished = true;
+        try { delete window[cbName]; } catch (err) { window[cbName] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[cbName] = function (data) {
+        cleanup();
+        resolve((data && data.submissions) || []);
+      };
+
+      script.onerror = function () {
+        cleanup();
+        resolve(null);
+      };
+
+      window.setTimeout(function () {
+        if (!finished) {
+          cleanup();
+          resolve(null);
+        }
+      }, 12000);
+
+      var sep = apiUrl.indexOf("?") >= 0 ? "&" : "?";
+      script.src = apiUrl + sep + "callback=" + encodeURIComponent(cbName) + "&v=" + Date.now();
+      document.head.appendChild(script);
+    });
   }
 
   function refreshSubmissionsList() {
