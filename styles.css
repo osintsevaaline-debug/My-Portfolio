@@ -49,6 +49,7 @@ body::before {
     linear-gradient(180deg, var(--bg-deep) 0%, var(--bg) 38%, var(--bg) 100%);
 }
 
+/* WebGL «галактика» (OGL), под контентом, без перехвата кликов */
 body > .galaxy-bg {
   position: fixed;
   inset: 0;
@@ -203,10 +204,21 @@ body > * {
   background: var(--accent);
   color: #0a0a0c !important;
   font-weight: 600 !important;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  text-decoration: none;
+  line-height: 1.4;
 }
 
 .nav-cta:hover {
   filter: brightness(1.08);
+}
+
+button.btn {
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .section {
@@ -934,6 +946,58 @@ body > * {
   background: var(--card-gradient);
 }
 
+.project-showcase-card--fintech {
+  background: linear-gradient(155deg, rgba(124, 58, 237, 0.08), rgba(155, 184, 74, 0.04), var(--bg-elevated));
+}
+
+.project-showcase-card--fintech:hover {
+  border-color: rgba(168, 85, 247, 0.32);
+  box-shadow:
+    0 28px 56px rgba(0, 0, 0, 0.42),
+    0 0 44px rgba(124, 58, 237, 0.16);
+}
+
+.project-showcase-card--fintech .project-tag {
+  color: #c4b5fd;
+}
+
+.project-showcase-card--fintech.chroma-card {
+  --spotlight-color: rgba(168, 85, 247, 0.2);
+  background: var(--card-gradient);
+}
+
+.project-showcase-card--fintech .project-showcase-card__frame {
+  background:
+    radial-gradient(ellipse 90% 80% at 20% 0%, rgba(124, 58, 237, 0.18), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 90% 100%, rgba(155, 184, 74, 0.1), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.14));
+}
+
+.project-showcase-card--fintech .project-showcase-card__frame::after {
+  background:
+    linear-gradient(
+      155deg,
+      rgba(124, 58, 237, 0.12) 0%,
+      rgba(10, 10, 12, 0.04) 45%,
+      rgba(10, 10, 12, 0.16) 100%
+    );
+  mix-blend-mode: soft-light;
+  opacity: 0.72;
+}
+
+.project-showcase-card--fintech .project-showcase-card__frame img {
+  max-height: 320px;
+  filter: saturate(0.94) brightness(0.95) contrast(1.04);
+}
+
+.project-showcase-card--fintech:hover .project-showcase-card__frame img {
+  filter: saturate(0.98) brightness(0.97) contrast(1.04);
+}
+
+.chroma-grid:not(.chroma-grid--static) .project-showcase-card--fintech.chroma-card:hover .project-showcase-card__frame img {
+  transform: scale(1.02);
+}
+
 .project-showcase-card__frame {
   margin: 0;
   position: relative;
@@ -1114,23 +1178,9 @@ body > * {
   padding-top: 14px;
 }
 
-@media (min-width: 961px) {
-  .projects-showcase > .project-showcase-card:nth-child(6):last-child {
-    grid-column: 1 / -1;
-    max-width: calc(66.666% - 9px);
-    justify-self: center;
-  }
-}
-
 @media (max-width: 960px) {
   .projects-showcase {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .projects-showcase > .project-showcase-card:nth-child(6):last-child {
-    grid-column: auto;
-    max-width: none;
-    justify-self: stretch;
   }
 
   .project-showcase-card--lead {
@@ -1607,6 +1657,7 @@ body > * {
 .reveal.is-visible .tag-list > li:nth-child(6) {
   transition-delay: 0.38s;
 }
+
 
 .reveal.is-visible .cards-grid > .card:nth-child(7),
 .reveal.is-visible .badges > span:nth-child(7),

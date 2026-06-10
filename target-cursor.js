@@ -51,7 +51,7 @@
   if (corners.length !== 4) return;
 
   document.querySelectorAll(
-    ".btn, a.logo, .site-header .nav a, .card, .project-card, .to-top, .contacts a"
+    ".btn, a.logo, .site-header .nav a, .card, .project-showcase-card, .to-top, .contacts a"
   ).forEach(function (el) {
     el.classList.add("cursor-target");
   });
