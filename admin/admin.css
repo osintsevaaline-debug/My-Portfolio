@@ -279,6 +279,126 @@ a { color: var(--accent); }
   gap: 12px;
 }
 
+.admin-submissions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.admin-submissions-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.admin-submissions-list {
+  margin-bottom: 24px;
+}
+
+.admin-submissions-count {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.admin-submissions-ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-submission-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+}
+
+.admin-submission-num {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(196, 255, 77, 0.12);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.admin-submission-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-submission-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.admin-submission-name {
+  font-size: 1rem;
+}
+
+.admin-submission-date {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.admin-submission-contacts {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.admin-submission-sep {
+  margin: 0 6px;
+  color: var(--muted);
+}
+
+.admin-submissions-settings {
+  margin-top: 8px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+}
+
+.admin-submissions-settings summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--muted);
+  user-select: none;
+}
+
+.admin-submissions-settings[open] summary {
+  margin-bottom: 14px;
+  color: var(--text);
+}
+
+.admin-submissions-settings .admin-hint {
+  margin-top: 0;
+}
+
+.admin-submissions-settings .btn-sm {
+  margin-top: 12px;
+}
+
 .admin-submissions-hint ol {
   margin: 8px 0 0;
   padding-left: 1.2rem;
@@ -292,7 +412,6 @@ a { color: var(--accent); }
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 16px 0 8px;
 }
 
 .admin-submissions-status {
@@ -317,46 +436,6 @@ a { color: var(--accent); }
   margin: 0 0 10px;
   font-size: 0.82rem;
   color: var(--muted);
-}
-
-.admin-subsection-title {
-  margin: 20px 0 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.admin-table-wrap {
-  overflow-x: auto;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-}
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-}
-
-.admin-table th,
-.admin-table td {
-  padding: 10px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--line);
-  vertical-align: top;
-}
-
-.admin-table th {
-  color: var(--muted);
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.admin-table tr:last-child td {
-  border-bottom: none;
-}
-
-.admin-table a {
-  word-break: break-all;
 }
 
 @media (max-width: 900px) {
