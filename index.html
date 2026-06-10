@@ -945,7 +945,13 @@
         document.body.classList.add("contact-modal-open");
         const first = form.querySelector("input:not([type='checkbox'])");
         window.setTimeout(function () {
-          first && first.focus();
+          if (first && typeof first.focus === "function") {
+            try {
+              first.focus({ preventScroll: true });
+            } catch (err) {
+              first.focus();
+            }
+          }
         }, 80);
       }
 
