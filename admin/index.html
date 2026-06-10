@@ -20,7 +20,7 @@
         <input type="password" id="loginPassword" autocomplete="current-password" required>
       </div>
       <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px">Войти</button>
-      <p class="admin-hint" style="margin-top:16px;margin-bottom:0">Пароль по умолчанию: <code>vibe2026</code> — смените в <code>admin/config.js</code></p>
+      <p class="admin-hint" style="margin-top:16px;margin-bottom:0">Пароль задаётся в файле <code>admin/config.js</code>. После смены — сохраните файл и запушьте на GitHub.</p>
     </form>
   </div>
 
@@ -91,7 +91,7 @@
 
   <div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
 
-  <script src="config.js"></script>
+  <script src="config.js?v=2"></script>
   <script src="admin.js"></script>
 </body>
 </html>

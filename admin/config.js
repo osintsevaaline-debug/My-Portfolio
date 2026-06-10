@@ -1,4 +1,4 @@
 window.ADMIN_CONFIG = {
-  password: "vibe2026",
+  password: "Asxz25041986!",
   sessionKey: "portfolio-admin-session"
 };

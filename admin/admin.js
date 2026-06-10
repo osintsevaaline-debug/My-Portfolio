@@ -31,14 +31,21 @@
   }
 
   function bindLogin() {
+    if (!window.ADMIN_CONFIG || !window.ADMIN_CONFIG.password) {
+      toast("Не загружен config.js — обновите страницу");
+      return;
+    }
+
     $("#loginForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      var pass = $("#loginPassword").value;
+      var pass = ($("#loginPassword").value || "").trim();
       if (pass === window.ADMIN_CONFIG.password) {
         sessionStorage.setItem(window.ADMIN_CONFIG.sessionKey, "1");
         showApp();
       } else {
         toast("Неверный пароль");
+        $("#loginPassword").value = "";
+        $("#loginPassword").focus();
       }
     });
     $("#logoutBtn").addEventListener("click", function () {
