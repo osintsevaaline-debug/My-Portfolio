@@ -68,6 +68,11 @@ a { color: var(--accent); }
   min-height: 100vh;
 }
 
+.admin-shell[hidden],
+.admin-login[hidden] {
+  display: none !important;
+}
+
 .admin-sidebar {
   border-right: 1px solid var(--line);
   padding: 24px 16px;

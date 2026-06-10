@@ -2,9 +2,32 @@
   const DRAFT_KEY = "portfolio-content-draft";
   const CONTENT_URL = "../data/content.json";
   let content = null;
+  let memoryAuth = false;
 
   const $ = function (sel, root) { return (root || document).querySelector(sel); };
   const $$ = function (sel, root) { return Array.from((root || document).querySelectorAll(sel)); };
+
+  function normalizePass(value) {
+    return String(value || "").trim().normalize("NFC");
+  }
+
+  function getConfigPassword() {
+    return window.ADMIN_CONFIG && normalizePass(window.ADMIN_CONFIG.password);
+  }
+
+  function setAuthed(value) {
+    memoryAuth = !!value;
+    if (!window.ADMIN_CONFIG || !window.ADMIN_CONFIG.sessionKey) return;
+    try {
+      if (value) {
+        sessionStorage.setItem(window.ADMIN_CONFIG.sessionKey, "1");
+      } else {
+        sessionStorage.removeItem(window.ADMIN_CONFIG.sessionKey);
+      }
+    } catch (err) {
+      /* sessionStorage может быть недоступен — используем memoryAuth */
+    }
+  }
 
   function toast(msg) {
     var el = $("#adminToast");
@@ -16,18 +39,42 @@
   }
 
   function isAuthed() {
-    return !!(window.ADMIN_CONFIG && sessionStorage.getItem(window.ADMIN_CONFIG.sessionKey) === "1");
+    if (memoryAuth) return true;
+    if (!window.ADMIN_CONFIG || !window.ADMIN_CONFIG.sessionKey) return false;
+    try {
+      return sessionStorage.getItem(window.ADMIN_CONFIG.sessionKey) === "1";
+    } catch (err) {
+      return memoryAuth;
+    }
   }
 
   function showApp() {
-    $("#adminLogin").hidden = true;
-    $("#adminShell").hidden = false;
+    var login = $("#adminLogin");
+    var shell = $("#adminShell");
+    if (!login || !shell) {
+      showLoginError("Ошибка разметки админки. Обновите страницу.");
+      return;
+    }
+    login.hidden = true;
+    login.setAttribute("aria-hidden", "true");
+    shell.hidden = false;
+    shell.removeAttribute("hidden");
+    shell.setAttribute("aria-hidden", "false");
+    toast("Вход выполнен");
     loadAndRender();
   }
 
   function showLogin() {
-    $("#adminLogin").hidden = false;
-    $("#adminShell").hidden = true;
+    var login = $("#adminLogin");
+    var shell = $("#adminShell");
+    if (login) {
+      login.hidden = false;
+      login.setAttribute("aria-hidden", "false");
+    }
+    if (shell) {
+      shell.hidden = true;
+      shell.setAttribute("aria-hidden", "true");
+    }
   }
 
   function showLoginError(msg) {
@@ -40,25 +87,26 @@
   }
 
   function tryLogin() {
-    if (!window.ADMIN_CONFIG || !window.ADMIN_CONFIG.password) {
-      showLoginError("Не загружен config.js. Обновите страницу: Ctrl+Shift+R");
+    var expected = getConfigPassword();
+    if (!expected) {
+      showLoginError("Пароль не задан в конфиге. Обновите страницу: Ctrl+Shift+R");
       return;
     }
 
-    var pass = ($("#loginPassword").value || "").trim();
+    var pass = normalizePass($("#loginPassword") && $("#loginPassword").value);
     if (!pass) {
       showLoginError("Введите пароль");
       return;
     }
 
-    if (pass === window.ADMIN_CONFIG.password) {
+    if (pass === expected) {
       showLoginError("");
-      sessionStorage.setItem(window.ADMIN_CONFIG.sessionKey, "1");
+      setAuthed(true);
       showApp();
       return;
     }
 
-    showLoginError("Неверный пароль");
+    showLoginError("Неверный пароль. Проверьте раскладку, регистр и символы.");
     $("#loginPassword").value = "";
     $("#loginPassword").focus();
   }
@@ -74,22 +122,25 @@
 
     var submitBtn = $("#loginSubmitBtn");
     if (submitBtn) {
-      submitBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        tryLogin();
+      submitBtn.addEventListener("click", tryLogin);
+    }
+
+    var passwordInput = $("#loginPassword");
+    if (passwordInput) {
+      passwordInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          tryLogin();
+        }
       });
     }
 
     var logout = $("#logoutBtn");
     if (logout) {
       logout.addEventListener("click", function () {
-        sessionStorage.removeItem(window.ADMIN_CONFIG.sessionKey);
+        setAuthed(false);
         showLogin();
       });
-    }
-
-    if (!window.ADMIN_CONFIG || !window.ADMIN_CONFIG.password) {
-      showLoginError("Не загружен config.js. Обновите страницу: Ctrl+Shift+R");
     }
   }
 
@@ -488,12 +539,10 @@
       bindLogin();
       bindNav();
       bindActions();
-      if (isAuthed() && window.ADMIN_CONFIG && window.ADMIN_CONFIG.password) {
+      if (isAuthed() && getConfigPassword()) {
         showApp();
       } else {
-        if (window.ADMIN_CONFIG && window.ADMIN_CONFIG.sessionKey) {
-          sessionStorage.removeItem(window.ADMIN_CONFIG.sessionKey);
-        }
+        setAuthed(false);
         showLogin();
       }
     } catch (err) {

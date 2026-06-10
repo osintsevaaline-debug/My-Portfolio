@@ -20,8 +20,8 @@
         <input type="password" id="loginPassword" autocomplete="current-password" required>
       </div>
       <p class="admin-login__error" id="loginError" role="alert" hidden></p>
-      <button type="submit" class="btn btn-primary" id="loginSubmitBtn" style="width:100%;margin-top:8px">Войти</button>
-      <p class="admin-hint" style="margin-top:16px;margin-bottom:0">Пароль задаётся в файле <code>admin/config.js</code>. После смены — сохраните файл и запушьте на GitHub.</p>
+      <button type="button" class="btn btn-primary" id="loginSubmitBtn" style="width:100%;margin-top:8px">Войти</button>
+      <p class="admin-hint" style="margin-top:16px;margin-bottom:0">Пароль задаётся в <code>admin/index.html</code> и <code>admin/config.js</code>. После смены — запушьте на GitHub.</p>
     </form>
   </div>
 
@@ -92,7 +92,18 @@
 
   <div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
 
-  <script src="./config.js?v=3"></script>
-  <script src="./admin.js?v=3"></script>
+  <script>
+    window.ADMIN_CONFIG = {
+      password: "Asxz25041986!",
+      sessionKey: "portfolio-admin-session"
+    };
+  </script>
+  <script src="./config.js?v=4"></script>
+  <script>
+    if (window.ADMIN_CONFIG && !window.ADMIN_CONFIG.password) {
+      window.ADMIN_CONFIG.password = "Asxz25041986!";
+    }
+  </script>
+  <script src="./admin.js?v=4"></script>
 </body>
 </html>
