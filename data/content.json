@@ -200,7 +200,7 @@
     "title": "Контакты",
     "telegram": { "label": "@Alina_Osintseva", "url": "https://t.me/Alina_Osintseva" },
     "email": { "label": "Osintseva.aline@gmail.com", "url": "mailto:Osintseva.aline@gmail.com" },
-    "application": { "label": "https://xn--90aoxr.online", "url": "https://xn--90aoxr.online/" }
+    "application": { "label": "Оформить заявку", "buttonLabel": "Оформить заявку", "url": "https://xn--90aoxr.online/" }
   },
   "privacy": {
     "title": "Политика конфиденциальности",

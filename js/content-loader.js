@@ -215,7 +215,13 @@
         contactsList.innerHTML =
           "<li><strong>Telegram:</strong> <a href=\"" + c.telegram.url + "\">" + c.telegram.label + "</a></li>" +
           "<li><strong>Email:</strong> <a href=\"" + c.email.url + "\">" + c.email.label + "</a></li>" +
-          "<li><strong>Оформить заявку :</strong> <a href=\"" + c.application.url + "\" target=\"_blank\" rel=\"noopener noreferrer\">" + c.application.label + "</a></li>";
+          "<li class=\"contacts-item contacts-item--application\">" +
+          "<a class=\"btn btn-primary contacts-application-btn\" href=\"" + c.application.url + "\" target=\"_blank\" rel=\"noopener noreferrer\">" +
+          (c.application.buttonLabel || c.application.label || "Оформить заявку") +
+          "</a></li>";
+        contactsList.querySelectorAll("a").forEach(function (link) {
+          link.classList.add("cursor-target");
+        });
       }
     }
 

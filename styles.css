@@ -1494,6 +1494,27 @@ button.btn {
   text-decoration: underline;
 }
 
+.contacts-item--application {
+  padding-top: 20px;
+  border-bottom: none;
+}
+
+.contacts-application-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 4px;
+  text-decoration: none;
+  -webkit-tap-highlight-color: rgba(196, 255, 77, 0.2);
+  touch-action: manipulation;
+}
+
+.contacts-application-btn:hover {
+  text-decoration: none;
+}
+
 .muted {
   color: var(--muted);
   font-size: 0.95rem;
