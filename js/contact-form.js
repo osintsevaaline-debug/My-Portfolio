@@ -64,18 +64,43 @@
     if (!config.submissionsApiUrl) {
       return Promise.reject(new Error("no_sheet"));
     }
-    var body = new URLSearchParams();
-    body.append("name", payload.name);
-    body.append("email", payload.email);
-    body.append("phone", payload.phone);
-    body.append("source", payload.source || "portfolio-contact-form");
 
-    return fetch(config.submissionsApiUrl, {
-      method: "POST",
-      mode: "no-cors",
-      body: body
-    }).then(function () {
-      return { success: true };
+    return new Promise(function (resolve) {
+      var iframeName = "portfolio-sheet-" + Date.now();
+      var iframe = document.createElement("iframe");
+      iframe.name = iframeName;
+      iframe.title = "portfolio-sheet-submit";
+      iframe.setAttribute("hidden", "hidden");
+      iframe.style.cssText = "position:absolute;width:0;height:0;border:0;visibility:hidden;";
+      document.body.appendChild(iframe);
+
+      var form = document.createElement("form");
+      form.method = "POST";
+      form.action = config.submissionsApiUrl;
+      form.target = iframeName;
+      form.acceptCharset = "UTF-8";
+
+      [
+        ["name", payload.name],
+        ["email", payload.email],
+        ["phone", payload.phone],
+        ["source", payload.source || "portfolio-contact-form"]
+      ].forEach(function (pair) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = pair[0];
+        input.value = pair[1];
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+
+      window.setTimeout(function () {
+        if (form.parentNode) form.parentNode.removeChild(form);
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        resolve({ success: true });
+      }, 2000);
     });
   }
 

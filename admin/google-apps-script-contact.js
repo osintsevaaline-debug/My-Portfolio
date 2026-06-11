@@ -61,7 +61,7 @@ function doGet(e) {
   var result = { submissions: getSubmissions() };
   var callback = e && e.parameter && e.parameter.callback;
 
-  if (callback) {
+  if (callback && /^[a-zA-Z_$][\w$]*$/.test(callback)) {
     return ContentService
       .createTextOutput(callback + "(" + JSON.stringify(result) + ")")
       .setMimeType(ContentService.MimeType.JAVASCRIPT);

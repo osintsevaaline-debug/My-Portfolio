@@ -549,9 +549,24 @@
     );
   }
 
-  function loadRemoteSubmissions(apiUrl) {
-    if (!apiUrl) return Promise.resolve([]);
+  function loadRemoteSubmissionsViaFetch(apiUrl) {
+    return fetch(apiUrl + (apiUrl.indexOf("?") >= 0 ? "&" : "?") + "v=" + Date.now(), {
+      method: "GET",
+      cache: "no-store"
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("fetch_failed");
+        return res.json();
+      })
+      .then(function (data) {
+        return (data && data.submissions) || [];
+      })
+      .catch(function () {
+        return null;
+      });
+  }
 
+  function loadRemoteSubmissionsViaJsonp(apiUrl) {
     return new Promise(function (resolve) {
       var cbName = "portfolioSubmissions_" + Date.now();
       var script = document.createElement("script");
@@ -579,11 +594,20 @@
           cleanup();
           resolve(null);
         }
-      }, 12000);
+      }, 10000);
 
       var sep = apiUrl.indexOf("?") >= 0 ? "&" : "?";
       script.src = apiUrl + sep + "callback=" + encodeURIComponent(cbName) + "&v=" + Date.now();
       document.head.appendChild(script);
+    });
+  }
+
+  function loadRemoteSubmissions(apiUrl) {
+    if (!apiUrl) return Promise.resolve([]);
+
+    return loadRemoteSubmissionsViaJsonp(apiUrl).then(function (jsonpResult) {
+      if (jsonpResult !== null) return jsonpResult;
+      return loadRemoteSubmissionsViaFetch(apiUrl);
     });
   }
 
