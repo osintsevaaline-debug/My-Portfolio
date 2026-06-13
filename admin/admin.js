@@ -495,7 +495,7 @@
     var email = $("#f-notify-email");
     return {
       web3formsAccessKey: web3 ? web3.value.trim() : "",
-      submissionsApiUrl: api ? api.value.trim() : "",
+      submissionsApiUrl: api ? normalizeApiUrl(api.value) : "",
       notifyEmail: email ? email.value.trim() : "",
       telegramHint: (contactConfig && contactConfig.telegramHint) || "@Alina_Osintseva"
     };
@@ -547,6 +547,67 @@
       }).join("") +
       "</ol>"
     );
+  }
+
+  function normalizeApiUrl(url) {
+    return String(url || "").trim();
+  }
+
+  function getSubmissionsErrorMessage(reason) {
+    if (reason === "auth_required") {
+      return (
+        "<strong>Скрипт закрыт.</strong> Google просит войти в аккаунт — заявки с сайта не сохраняются. " +
+        "В Apps Script: Развернуть → Управление развертываниями → карандаш → " +
+        "<strong>У кого есть доступ: Все</strong> (Anyone) → Новая версия → Развернуть. " +
+        "Проверка: откройте URL в режиме инкогнито — должен показаться <code>{\"submissions\":[]}</code> без входа."
+      );
+    }
+    if (reason === "empty") {
+      return "Укажите URL Google Apps Script в настройках ниже.";
+    }
+    if (reason === "invalid_response") {
+      return "Скрипт ответил неожиданно. Убедитесь, что в таблице есть строка заголовков и код из <code>google-apps-script-contact.js</code> развёрнут заново.";
+    }
+    return "Не удалось загрузить заявки. Проверьте URL и доступ Web App.";
+  }
+
+  function diagnoseSubmissionsApi(apiUrl) {
+    apiUrl = normalizeApiUrl(apiUrl);
+    if (!apiUrl) return Promise.resolve({ ok: false, reason: "empty" });
+    if (apiUrl.indexOf("script.google.com/macros/s/") < 0 || apiUrl.indexOf("/exec") < 0) {
+      return Promise.resolve({ ok: false, reason: "invalid_response" });
+    }
+
+    return fetch(apiUrl + (apiUrl.indexOf("?") >= 0 ? "&" : "?") + "v=" + Date.now(), {
+      method: "GET",
+      cache: "no-store"
+    })
+      .then(function (res) {
+        if (res.url && res.url.indexOf("accounts.google.com") >= 0) {
+          return { ok: false, reason: "auth_required" };
+        }
+        return res.text().then(function (text) {
+          if (
+            text.indexOf("accounts.google.com") >= 0 ||
+            text.indexOf("Sign in") >= 0 ||
+            text.indexOf("Войти") >= 0
+          ) {
+            return { ok: false, reason: "auth_required" };
+          }
+          try {
+            var data = JSON.parse(text);
+            if (data && Array.isArray(data.submissions)) {
+              return { ok: true, count: data.submissions.length };
+            }
+          } catch (err) {
+            /* ignore */
+          }
+          return { ok: false, reason: "invalid_response" };
+        });
+      })
+      .catch(function () {
+        return { ok: false, reason: "network" };
+      });
   }
 
   function loadRemoteSubmissionsViaFetch(apiUrl) {
@@ -628,11 +689,21 @@
       var html = "";
 
       if (remote === null && cfg.submissionsApiUrl) {
-        html += '<p class="admin-submissions-empty is-error">Не удалось загрузить заявки. Проверьте URL Google Apps Script.</p>';
-        if (local.length) {
-          html += '<p class="admin-submissions-note">Показаны только заявки из этого браузера:</p>';
-          html += renderNumberedSubmissionsList(local);
-        }
+        diagnoseSubmissionsApi(cfg.submissionsApiUrl).then(function (diag) {
+          html += '<p class="admin-submissions-empty is-error">' + getSubmissionsErrorMessage(diag.reason) + "</p>";
+          if (local.length) {
+            html += '<p class="admin-submissions-note">Показаны только тестовые заявки из этого браузера (на сайт они не попали в таблицу):</p>';
+            html += renderNumberedSubmissionsList(local);
+          }
+          listEl.innerHTML = html;
+          if (statusEl) {
+            statusEl.textContent = diag.reason === "auth_required"
+              ? "Ошибка: скрипт требует вход в Google"
+              : "Ошибка подключения";
+            statusEl.classList.add("is-error");
+          }
+        });
+        return;
       } else if (merged.length) {
         html +=
           '<p class="admin-submissions-count">Всего заявок: <strong>' + merged.length + "</strong></p>" +
@@ -673,6 +744,7 @@
       "<h2 class=\"admin-submissions-title\">Входящие заявки</h2>" +
       '<div class="admin-submissions-actions">' +
       '<button type="button" class="btn" id="refreshSubmissionsBtn">Обновить</button>' +
+      '<button type="button" class="btn btn-sm" id="testSubmissionsBtn">Проверить URL</button>' +
       "</div>" +
       "</div>" +
       '<p class="admin-submissions-status" id="submissionsStatus"></p>' +
@@ -684,9 +756,11 @@
       "<ol>" +
       "<li>Создайте <a href=\"https://docs.google.com/spreadsheets\" target=\"_blank\" rel=\"noopener\">Google Таблицу</a>.</li>" +
       "<li>Расширения → Apps Script → вставьте код из <code>admin/google-apps-script-contact.js</code>.</li>" +
-      "<li>Развернуть → Web App → доступ «Anyone» → скопируйте URL в поле ниже.</li>" +
-      "<li>Скачайте <code>contact-config.json</code> и замените файл в репозитории.</li>" +
+      "<li>Развернуть → <strong>Новое развертывание</strong> → Web App.</li>" +
+      "<li><strong>Запуск от имени:</strong> Я. <strong>У кого есть доступ:</strong> <strong>Все</strong> (не «Только я» и не «Пользователи Google»).</li>" +
+      "<li>Скопируйте URL (заканчивается на <code>/exec</code>) в поле ниже и скачайте <code>contact-config.json</code>.</li>" +
       "</ol>" +
+      "<p><strong>Проверка:</strong> URL в режиме инкогнито должен показать <code>{\"submissions\":[]}</code> без входа в Google.</p>" +
       "<p>Дополнительно: <a href=\"https://web3forms.com\" target=\"_blank\" rel=\"noopener\">Web3Forms</a> — дублирование на почту.</p>" +
       "</div>" +
       field("URL Google Apps Script", "f-submissions-api", cfg.submissionsApiUrl) +
@@ -697,6 +771,33 @@
 
     var refreshBtn = $("#refreshSubmissionsBtn");
     if (refreshBtn) refreshBtn.onclick = refreshSubmissionsList;
+
+    var testBtn = $("#testSubmissionsBtn");
+    if (testBtn) {
+      testBtn.onclick = function () {
+        var cfg = collectContactConfigFromForm();
+        var statusEl = $("#submissionsStatus");
+        if (statusEl) {
+          statusEl.textContent = "Проверка URL…";
+          statusEl.classList.remove("is-error");
+        }
+        diagnoseSubmissionsApi(cfg.submissionsApiUrl).then(function (diag) {
+          if (diag.ok) {
+            toast("Подключение OK · заявок в таблице: " + (diag.count || 0));
+            if (statusEl) statusEl.textContent = "Подключение OK";
+            refreshSubmissionsList();
+            return;
+          }
+          toast(getSubmissionsErrorMessage(diag.reason).replace(/<[^>]+>/g, ""));
+          if (statusEl) {
+            statusEl.textContent = diag.reason === "auth_required"
+              ? "Скрипт закрыт — выберите доступ «Все»"
+              : "Ошибка подключения";
+            statusEl.classList.add("is-error");
+          }
+        });
+      };
+    }
 
     var exportBtn = $("#exportContactConfigBtn");
     if (exportBtn) {
