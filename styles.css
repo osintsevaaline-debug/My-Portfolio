@@ -1485,12 +1485,12 @@ button.btn {
   border-bottom: none;
 }
 
-.contacts a {
+.contacts a:not(.contacts-application-btn) {
   color: var(--accent);
   text-decoration: none;
 }
 
-.contacts a:hover {
+.contacts a:not(.contacts-application-btn):hover {
   text-decoration: underline;
 }
 
@@ -1506,6 +1506,8 @@ button.btn {
   width: 100%;
   min-height: 48px;
   margin-top: 4px;
+  color: #0a0a0c;
+  font-weight: 600;
   text-decoration: none;
   -webkit-tap-highlight-color: rgba(196, 255, 77, 0.2);
   touch-action: manipulation;
@@ -1513,6 +1515,7 @@ button.btn {
 
 .contacts-application-btn:hover {
   text-decoration: none;
+  color: #0a0a0c;
 }
 
 .muted {
