@@ -283,4 +283,43 @@
   } else {
     initContactForm();
   }
-})();
+  document.addEventListener('DOMContentLoaded', function () {
+  const form = document.querySelector('form');
+  if (!form || form.dataset.formspree) return;
+  form.dataset.formspree = 'true';
+
+  const btn = form.querySelector('button[type="submit"]') || form.querySelector('button');
+  const originalText = btn ? btn.innerText : 'Отправить';
+
+  // Если кнопки нет — добавим кнопку в форму
+  if (!btn) {
+    const submitBtn = document.createElement('button');
+    submitBtn.type = 'submit';
+    submitBtn.innerText = 'Отправить';
+    form.appendChild(submitBtn);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) { btn.disabled = true; btn.innerText = 'Отправка...'; }
+
+    const formData = new FormData(form);
+    fetch('https://formspree.io/f/mrevrzrl', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert('Сообщение отправлено! Мы свяжемся с вами.');
+      form.reset();
+      if (btn) { btn.disabled = false; btn.innerText = originalText; }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Ошибка при отправке. Попробуйте позже.');
+      if (btn) { btn.disabled = false; btn.innerText = originalText; }
+    });
+  });
+});
